@@ -10,7 +10,7 @@ Aplicar uma ruleset de branch direcionada a `main` com:
 - branch atualizada com `main` antes do merge (`strict status checks`);
 - bloqueio de force push e de deleção da branch;
 - nenhuma exceção permanente para push direto;
-- revisão por CODEOWNERS somente depois que `.github/CODEOWNERS` possuir owners reais.
+- revisão obrigatória pelos owners reais definidos em `.github/CODEOWNERS`.
 
 O smoke test completo pode ser mantido como check adicional até sua duração e
 estabilidade serem conhecidas. A ruleset depende de permissão administrativa
