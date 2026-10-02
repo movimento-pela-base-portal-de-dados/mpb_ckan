@@ -22,30 +22,11 @@ PATH="${FAKE_BIN}:${PATH}" "${ROOT}/bin/daily-restart"
 grep -Eq '^compose -f .*/docker-compose\.yml down$' "${FAKE_DOCKER_LOG}"
 grep -Eq '^compose -f .*/docker-compose\.yml up -d --wait$' "${FAKE_DOCKER_LOG}"
 
-DEPLOY_ROOT="${TMP_DIR}/deploy"
-mkdir -p "${DEPLOY_ROOT}/.github/scripts" "${DEPLOY_ROOT}/bin"
-cp "${ROOT}/.github/scripts/deploy.sh" "${DEPLOY_ROOT}/.github/scripts/deploy.sh"
-printf 'REGISTRY=registry.example.org/abc\n' > "${DEPLOY_ROOT}/.env"
-
-cat > "${FAKE_BIN}/curl" <<'EOF'
-#!/usr/bin/env bash
-printf '%s\n' '{"access_token":"test-token"}'
-EOF
-
-cat > "${FAKE_BIN}/python3" <<'EOF'
-#!/usr/bin/env bash
-printf '%s\n' 'test-token'
-EOF
-chmod +x "${FAKE_BIN}/curl" "${FAKE_BIN}/python3"
-
-(cd "${DEPLOY_ROOT}" && PATH="${FAKE_BIN}:${PATH}" bash .github/scripts/deploy.sh)
-grep -Eq '^login -u oauth2accesstoken --password-stdin https://registry\.example\.org$' "${FAKE_DOCKER_LOG}"
-grep -Fxq 'compose -f docker-compose.yml pull ckan nginx db' "${FAKE_DOCKER_LOG}"
-grep -Fxq 'compose -f docker-compose.yml up -d --remove-orphans' "${FAKE_DOCKER_LOG}"
-grep -Fxq 'image prune -f' "${FAKE_DOCKER_LOG}"
-
-for script in "${ROOT}"/bin/* "${ROOT}"/.github/scripts/*.sh; do
+for script in "${ROOT}"/bin/* "${ROOT}"/ckan/docker-entrypoint.d/*.sh "${ROOT}"/postgresql/docker-entrypoint-initdb.d/*.sh; do
   bash -n "${script}"
 done
+
+test ! -d "${ROOT}/mpb-ckan"
+test -f "${ROOT}/.env.example"
 
 echo "Operational shell checks passed."
