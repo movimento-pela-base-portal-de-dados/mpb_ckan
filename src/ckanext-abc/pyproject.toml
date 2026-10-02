@@ -1,0 +1,37 @@
+[project]
+name = "ckanext-abc"
+version = "0.0.1"
+description = "Custom extension for ABC Ckan Setup"
+readme = "README.md"
+authors = [
+    {name = "Base dos Dados"}
+]
+license = "AGPL-3.0-or-later"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+]
+
+keywords = [ "CKAN", ]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Basedosdados/ckanext-abc"
+
+[project.entry-points."ckan.plugins"]
+abc = "ckanext.abc.plugin:AbcPlugin"
+
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+filterwarnings = [
+        "ignore::sqlalchemy.exc.SADeprecationWarning",
+        "ignore::sqlalchemy.exc.SAWarning",
+        "ignore::DeprecationWarning",
+]
+addopts = "--ckan-ini test.ini"

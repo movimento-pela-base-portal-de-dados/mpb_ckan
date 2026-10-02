@@ -1,0 +1,41 @@
+{% extends "page.html" %}
+
+{% block subtitle %}{{ _("Welcome") }}{% endblock %}
+
+{% block maintag %}{% endblock %}
+{% block toolbar %}{% endblock %}
+
+{% block content %}
+<div class="homepage">
+  <div id="content" class="container">
+    {{ self.flash() }}
+  </div>
+  {% block primary_content %}
+  <div role="main">
+    <div class="main hero">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            {% snippet 'home/snippets/promoted.html' %}
+            
+            <!-- Seção de Organizações - Movida para cá -->
+            <div style="margin-top: 30px;">
+              {% snippet 'home/snippets/organizations.html' %}
+            </div>
+          </div>
+         
+          <div class="col-md-6">
+            {% snippet 'home/snippets/search.html', search_facets=search_facets %}
+            
+            <!-- Apenas Grupos agora -->
+            <div style="margin-top: 30px;">
+              {% snippet 'home/snippets/groups.html' %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+</div>
+{% endblock %}

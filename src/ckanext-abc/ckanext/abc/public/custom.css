@@ -1,0 +1,434 @@
+/* =====================================================
+   Account Masthead
+   ===================================================== */
+
+.account-masthead {
+  background-color: #32C6F4;
+  color: #fff;
+
+
+}
+.account-masthead .account .notifications a span {
+  background-color: black;
+}
+.account-masthead .account ul li a {
+  display: block;
+  text-decoration: none;
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 0 10px;
+  line-height: 31px;
+}
+
+.account-masthead .account ul li {
+  border-left: 1px solid white !important;
+}
+
+.account-masthead .account ul li a:hover {
+  color: black;
+  background-color: #32C6F4;
+}
+
+.btn-link {
+  font-weight: 400;
+  color: white;
+  text-decoration: none;
+}
+.btn-link:hover {
+  color: black;
+  text-decoration: underline;
+}
+
+
+.account-masthead .account ul li a.sub {
+  font-weight: bold;
+}
+
+/* =====================================================
+   Main Content & Layout
+   ===================================================== */
+
+html {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+[role=main],
+.main {
+  position: relative;
+}
+
+.main {
+  flex: 1;
+  padding: 20px 0;
+  background: #ffffff;
+}
+
+a.tag:hover {
+  text-decoration: none;
+  color: #32C6F4;
+  background-color: white;
+  border: 1px solid #32C6F4;
+  box-shadow: none;
+}
+
+
+.toolbar .breadcrumb a {
+  color: #32C6F4;
+}
+
+/* ========================================================================
+   Main Masthead (Logo, Nav, Search)
+   ======================================================================== */
+
+.masthead {
+  background-color: white;
+  background:white;
+  border-bottom: 0.5px solid lightgray; 
+}
+
+.main:after,
+[role=main]:after {
+  bottom: 0;
+  border-top-width: 0px;
+}
+
+.media-grid, .module-grid {
+  margin: 0;
+  list-style: none;
+  padding-left: 0px;
+  min-height: 205px;
+  padding-top: 0.75rem;
+  background: white;
+  border: 1px solid #ddd;
+  border-width: 1px 0;
+}
+
+
+.masthead .navigation .nav-pills li a:hover {
+  background-color: #106F8C;
+  color: white;
+}
+.masthead .navigation .nav-pills li.active a {
+  background-color: #32C6F4;
+}
+.masthead input[type="text"]:focus {
+  -webkit-box-shadow: inset 0px 0px 2px 0px rgba(0, 0, 0, 0.7);
+  box-shadow: inset 0px 0px 2px 0px rgba(0, 0, 0, 0.7);
+}
+
+.masthead .main-navbar ul li a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #030303;
+    font-weight: bold;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+  }
+
+.masthead .main-navbar ul li a:hover {
+    color: #32C6F4 !important;
+    background-color: transparent !important;
+}
+
+.masthead .main-navbar ul li:hover a, .masthead .main-navbar ul li:focus a, .masthead .main-navbar ul li.active a {
+  border-radius: 0.3rem;
+  background-color: #32C6F4;
+  color: white;
+}
+
+.search-form .search-input button i {
+  color: #32C6F4;
+  transition: color 0.2s ease-in;
+}
+
+/* =====================================================
+   Homepage Specific Styles
+   ===================================================== */
+
+.homepage {
+  flex: 1;
+}
+
+.homepage,
+.homepage div[role="main"],
+.homepage .main.hero,
+.homepage .main.hero .container,
+.homepage .container,
+.homepage .row,
+.homepage .col-md-6,
+.homepage .module-promotion,
+.homepage .module-search,
+.homepage .card,
+.homepage .box {
+    background: white !important;
+    background-image: none !important;
+}
+
+.module-promotion.card.box {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+  padding: 24px;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid #f0f0f0; /* Borda mais visível */
+  background: #ffffff;
+}
+
+.module-content.search-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+  padding: 24px;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid #f0f0f0; /* Borda mais visível */
+  background: #ffffff;
+}
+   
+.box {
+  box-shadow: none;
+}
+.hero .box {
+  border: none;
+}
+.homepage .module-search .module-content {
+  color: rgb(68, 68, 68);
+  background-color: white;
+}
+.homepage .module-search .tags {
+  background-color: #32C6F4;
+}
+.module-content:last-child {
+  padding-bottom: 0px;
+}
+.homepage .module-search {
+  padding: 0px;
+}
+.homepage [role="main"] {
+  border-top: 0px solid rgb(204, 204, 204);
+}
+
+.homepage .module-search .tags {
+  background-color: #32C6F4;
+}
+
+/* =====================================================
+   Footer
+   ===================================================== */
+
+.site-footer {
+  background-color: #106F8C;
+  background: #106F8C;
+}
+
+body {
+  background-color: #ffffff;
+  background: #ffffff;
+}
+.site-footer,
+.site-footer label,
+.site-footer small {
+  color: rgba(255, 255, 255, 0.6);
+}
+.site-footer a {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* =====================================================
+   Masthead Logo Sizing
+   ===================================================== */
+
+.masthead .navbar .logo img {
+  max-height: 100px !important; /* Aumenta de 60px para 100px */
+  max-width: 100%;
+  transition: height 0.3s;
+  height: 100px; /* Tamanho base maior */
+}
+
+@media (min-width: 650px) {
+  .masthead .navbar .logo img {
+    height: 100px; /* Tamanho desktop */
+  }
+}
+
+/* =====================================================
+   Homepage Groups & Organizations
+   ===================================================== */
+
+.groups-row,
+.organizations-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Reduzido de 15px para 10px */
+  justify-content: flex-start;
+}
+
+.simple-group-item,
+.simple-org-item {
+  flex: 0 0 calc(50% - 5px); /* Ajustado para o gap menor */
+  margin-bottom: 10px; /* Reduzido de 20px para 10px */
+  text-align: center;
+}
+
+.simple-group-link,
+.simple-org-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.simple-group-logo,
+.simple-org-logo {
+  width: 120px !important; /* Mesmo tamanho para ambos */
+  height: 90px !important; /* Mesmo tamanho para ambos */
+  object-fit: cover !important;
+  padding: 5px !important;
+  margin-bottom: 8px !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  transition: transform 0.3s ease !important;
+}
+
+.simple-org-placeholder {
+  width: 110px !important; /* Mesmo tamanho que as logos */
+  height: 80px !important; /* Mesmo tamanho que as logos */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #f9f9f9 !important;
+  border-radius: 8px !important;
+  margin: 0 auto 8px !important;
+  transition: transform 0.3s ease !important;
+}
+
+.simple-org-placeholder i {
+  font-size: 30px !important; /* Reduzido de 40px para 30px */
+  color: #ccc;
+}
+
+.simple-group-logo:hover,
+.simple-org-logo:hover,
+.simple-org-placeholder:hover {
+  transform: scale(1.05) !important;
+}
+
+.simple-group-name,
+.simple-org-name {
+  display: block;
+  margin: 6px 0; /* Reduzido de 8px para 6px */
+  font-size: 14px; /* Reduzido de 16px para 14px */
+  font-weight: 500;
+  color: #333;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.simple-group-link:hover .simple-group-name,
+.simple-org-link:hover .simple-org-name {
+  color: #32C6F4;
+}
+
+.simple-group-count,
+.simple-org-count {
+  display: block;
+  font-size: 12px; /* Reduzido de 13px para 12px */
+  color: #666;
+}
+
+.simple-group-link:hover,
+.simple-org-link:hover {
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .simple-group-item,
+  .simple-org-item {
+    flex: 0 0 calc(50% - 5px) !important; /* Keep 2 per row on tablets */
+    margin-bottom: 8px !important; /* Reduzido para tablets */
+  }
+  
+  .simple-group-logo,
+  .simple-org-logo,
+  .simple-org-placeholder {
+    width: 100px !important; /* Mesmo tamanho em tablets */
+    height: 75px !important; /* Mesmo tamanho em tablets */
+  }
+}
+
+@media (max-width: 480px) {
+  .simple-group-item,
+  .simple-org-item {
+    flex: 0 0 100% !important; /* Single column on mobile */
+    margin-bottom: 6px !important; /* Ainda menor em mobile */
+  }
+  
+  .simple-group-logo,
+  .simple-org-logo,
+  .simple-org-placeholder {
+    width: 90px !important; /* Mesmo tamanho em mobile */
+    height: 70px !important; /* Mesmo tamanho em mobile */
+  }
+}
+
+/* =====================================================
+   Dataset Page Sidebar & Filters
+   ===================================================== */
+
+.module-narrow .nav-item.active > a:before,
+.module-narrow .nav-aside li.active a:before {
+  content: " ";
+  position: absolute;
+  border: 20px solid transparent;
+  border-right: none;
+  border-left-color: #32C6F4;
+  border-left-width: 6px;
+  top: 0;
+  bottom: 0;
+  right: -6px;
+  width: 6px;
+  height: 34px;
+}
+
+.pill {
+  display: inline-block;
+  background-color: #32C6F4;
+  color: #FFF;
+  padding: 2px 10px 1px 10px;
+  margin-right: 5px;
+  font-weight: normal;
+  border-radius: 100px;
+}
+
+.module-narrow .nav-item > a:hover,
+.module-narrow .nav-aside li a:hover {
+  text-decoration: none;
+  background-color: #87E3FF;
+}
+
+.module-narrow .nav-item.active > a,
+.module-narrow .nav-aside li.active a {
+  position: relative;
+  color: #fff;
+  background-color: #32C6F4;
+}
+.module-narrow .nav-item.active > a:hover,
+.module-narrow .nav-aside li.active a:hover {
+  color: #FFF;
+  background-color: #32C6F4;
+}
+.module-narrow .nav-item > a .badge,
+.module-narrow .nav-aside li a .badge {
+  background-color: #106F8C;
+  border-radius: 10px;
+}

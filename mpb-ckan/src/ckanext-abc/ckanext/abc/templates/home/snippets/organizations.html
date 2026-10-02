@@ -1,0 +1,35 @@
+<section class="module module-shallow module-narrow module-dark">
+  <div class="module-promotion card box" style="font-family: 'Hind', sans-serif; text-align: justify; display: flex; flex-direction: column; width: 100%; margin: 0; padding: 24px; overflow: hidden; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); border: 2px solid #f0f0f0; background: #ffffff;">
+    <div>
+      <div style="text-align: left; font-weight: bold; font-size: 18px; margin-bottom: 15px; color:rgb(68, 68, 68);">
+        <i class="fa fa-building"></i>
+        Organizações
+      </div>
+    </div>
+    
+    <div class="module-content">
+      {% set organizations = h.get_featured_organizations() %}
+      {% if organizations %}
+        <div class="organizations-row">
+          {% for org in organizations %}
+            <div class="simple-org-item">
+              <a href="{{ h.url_for('organization.read', id=org.name) }}" class="simple-org-link">
+                {% if org.image_display_url %}
+                  <img src="{{ org.image_display_url }}" alt="{{ org.display_name or org.name }}" class="simple-org-logo">
+                {% else %}
+                  <div class="simple-org-placeholder">
+                    <i class="fa fa-building" style="font-size: 40px; color: #ccc;"></i>
+                  </div>
+                {% endif %}
+                <span class="simple-org-name">{{ org.display_name or org.name }}</span>
+                <small class="simple-org-count">{{ org.package_count or 0 }} Datasets</small>
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p>Nenhuma organização disponível.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>

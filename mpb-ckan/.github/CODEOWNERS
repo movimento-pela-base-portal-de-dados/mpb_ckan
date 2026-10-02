@@ -1,0 +1,3 @@
+# Definir o usuário/time GitHub responsável antes de habilitar branch protection.
+# Exemplo: * @organizacao/time-portal
+# A arquitetura e os contratos entre repositórios devem ter revisão da liderança técnica.

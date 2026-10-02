@@ -1,0 +1,14 @@
+# abc-js:
+#   filter: rjsmin
+#   output: ckanext-abc/%(version)s-abc.js
+#   contents:
+#     - js/abc.js
+#   extra:
+#     preload:
+#       - base/main
+
+# abc-css:
+#   filter: cssrewrite
+#   output: ckanext-abc/%(version)s-abc.css
+#   contents:
+#     - css/abc.css
