@@ -1,0 +1,89 @@
+name: CKAN CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ckan-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  shell-tests:
+    name: Repository and Compose validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Compose files
+        run: |
+          cp .env.example .env
+          docker compose --env-file .env.example -f docker-compose.yml config --quiet
+          docker compose --env-file .env.example -f docker-compose.dev.yml config --quiet
+      - name: Run operational checks
+        run: tests/test_operations.sh
+
+  docker-build:
+    name: Production image build
+    needs: shell-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build production images without publishing
+        env:
+          IMAGE_TAG: sha-${{ github.sha }}
+        run: |
+          cp .env.example .env
+          docker compose --env-file .env.example build ckan nginx db
+
+  extension-tests:
+    name: Extension and API tests
+    needs: shell-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container:
+      image: ckan/ckan-dev:2.11
+      options: --user 0
+    services:
+      solr:
+        image: ckan/ckan-solr:2.11-solr9
+      postgres:
+        image: ckan/ckan-postgres-dev:2.11
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:6
+    env:
+      CKAN_SQLALCHEMY_URL: postgresql://ckan_default:pass@postgres/ckan_test
+      CKAN_DATASTORE_WRITE_URL: postgresql://datastore_write:pass@postgres/datastore_test
+      CKAN_DATASTORE_READ_URL: postgresql://datastore_read:pass@postgres/datastore_test
+      CKAN_SOLR_URL: http://solr:8983/solr/ckan
+      CKAN_REDIS_URL: redis://redis:6379/1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install extension requirements
+        working-directory: src/ckanext-abc
+        run: |
+          pip install -r requirements.txt
+          pip install -r dev-requirements.txt
+          pip install -e .
+      - name: Initialize CKAN test database
+        working-directory: src/ckanext-abc
+        run: |
+          sed -i -e 's#use = config:.*#use = config:/srv/app/src/ckan/test-core.ini#' test.ini
+          ckan -c test.ini db init
+      - name: Run extension and API tests
+        working-directory: src/ckanext-abc
+        run: pytest --ckan-ini=test.ini --cov=ckanext.abc --cov-report=term-missing ckanext/abc
