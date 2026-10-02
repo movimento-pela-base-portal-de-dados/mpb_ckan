@@ -1,6 +1,7 @@
 # generic
 .DS_Store
 .vagrant
+*Zone.Identifier
 
 # code & config
 _service-provider/*
