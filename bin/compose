@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 
-set -e
-ROOT="$(dirname ${BASH_SOURCE[0]})/.."
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-docker compose -f "${ROOT}/docker-compose.dev.yml" "$@"
+if docker compose version >/dev/null 2>&1; then
+  exec docker compose -f "${ROOT}/docker-compose.dev.yml" "$@"
+fi
+
+if [[ "$(docker-compose version --short 2>/dev/null)" == 2.* ]]; then
+  exec docker-compose -f "${ROOT}/docker-compose.dev.yml" "$@"
+fi
+
+echo "Docker Compose V2 não encontrado." >&2
+exit 1
