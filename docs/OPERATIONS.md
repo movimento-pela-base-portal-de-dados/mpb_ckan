@@ -55,6 +55,49 @@ bin/compose logs --tail=200 ckan-dev db solr redis datapusher
 Não execute `docker compose down -v` em ambiente com dados que precisem ser
 preservados. A opção `-v` remove volumes nomeados.
 
+## Validação de dependências, healthchecks e persistência
+
+O CKAN de desenvolvimento só inicia depois que PostgreSQL, Solr e Redis estão
+saudáveis. As sondas HTTP usam `127.0.0.1`: em Docker recente, `localhost`
+resolve primeiro para IPv6 e faz o healthcheck falhar com o serviço no ar.
+`start_period` cobre a inicialização do banco e da aplicação antes das
+tentativas contarem como falha.
+
+O `pg_isready` usa `-h 127.0.0.1` porque, pelo socket Unix, ele responde ao
+servidor temporário do init antes de `ckandb` e `datastore` existirem. O Solr é
+sondado em `/solr/ckan/admin/ping`, que só responde com o core do CKAN carregado.
+
+| Dado | Volume | Sobrevive a `docker compose down` |
+| --- | --- | --- |
+| PostgreSQL | `pg_data` | sim |
+| Índice Solr | `solr_data` | sim |
+| Arquivos do CKAN | `ckan_storage` | sim |
+| Redis | nenhum | não; cache e fila são recriados |
+| DataPusher | nenhum | não |
+
+No Compose de desenvolvimento, `site_packages`, `local_bin`, `home_dir` e
+`pip_cache` guardam pacotes, extensões instaladas por `bin/install_src` e o
+`ckan.ini`. Não são dados: depois de trocar a imagem base (por exemplo, nova
+versão do CKAN), remova esses volumes para que a imagem nova não fique mascarada:
+
+```bash
+bin/compose down
+project="$(basename "$PWD")"
+docker volume rm "${project}_site_packages" "${project}_local_bin" "${project}_home_dir"
+```
+
+PostgreSQL, Solr e Redis ficam em redes internas. No Compose de desenvolvimento
+o retorno do DataPusher aponta para `http://ckan-dev:5000`, porque o serviço
+local não se chama `ckan`.
+
+```bash
+python3 tests/test_compose_contract.py
+tests/test_compose_persistence.sh
+```
+
+O segundo comando usa o projeto Compose `mpbckanvalidacao` e apaga esses
+volumes ao terminar. Ele não altera a stack de desenvolvimento já em execução.
+
 ## Automação atual
 
 O CI executa validação de Compose e scripts, testes da extensão, build sem push

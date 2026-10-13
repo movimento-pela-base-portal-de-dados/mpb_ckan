@@ -30,7 +30,13 @@ jobs:
           cp .env.example .env
           docker compose --env-file .env.example -f docker-compose.dev.yml up -d --build --wait
       - name: Check service health
-        run: docker compose --env-file .env.example -f docker-compose.dev.yml ps
+        run: |
+          compose() { docker compose --env-file .env.example -f docker-compose.dev.yml "$@"; }
+          compose ps
+          for service in ckan-dev db solr redis datapusher; do
+            status="$(docker inspect -f '{{.State.Health.Status}}' "$(compose ps -q "${service}")")"
+            test "${status}" = healthy
+          done
       - name: Check CKAN HTTP endpoints
         run: |
           curl --fail --retry 12 --retry-delay 5 http://127.0.0.1:5000/api/action/status_show

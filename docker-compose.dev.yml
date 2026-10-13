@@ -17,12 +17,25 @@ services:
         - TZ=${TZ}
     env_file:
       - .env
-    links:
-      - db
-      - solr
-      - redis
+    environment:
+      CKAN__DATAPUSHER__CALLBACK_URL_BASE: http://ckan-dev:5000
+    networks:
+      - ckannet
+      - dbnet
+      - solrnet
+      - redisnet
     ports:
       - "0.0.0.0:${CKAN_PORT_HOST}:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+      solr:
+        condition: service_healthy
+        restart: true
+      redis:
+        condition: service_healthy
+        restart: true
     volumes:
       - ckan_storage:/var/lib/ckan
       - ./src:/srv/app/src_extensions
@@ -32,19 +45,24 @@ services:
       - home_dir:/srv/app/
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:5000"]
-      interval: 60s
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://127.0.0.1:5000/api/action/status_show"]
+      interval: 15s
       timeout: 10s
-      retries: 3
+      retries: 20
+      start_period: 300s
 
   datapusher:
     image: ckan/ckan-base-datapusher:${DATAPUSHER_VERSION}
+    networks:
+      - ckannet
+      - dbnet
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8800"]
-      interval: 60s
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://127.0.0.1:8800"]
+      interval: 15s
       timeout: 10s
-      retries: 3
+      retries: 10
+      start_period: 40s
 
   db:
     build:
@@ -59,22 +77,49 @@ services:
       - DATASTORE_READONLY_USER
       - DATASTORE_READONLY_PASSWORD
       - DATASTORE_DB
+    networks:
+      - dbnet
     volumes:
       - pg_data:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
-     
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
   solr:
     image: ckan/ckan-solr:${SOLR_IMAGE_VERSION}
+    networks:
+      - solrnet
     volumes:
       - solr_data:/var/solr
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8983/solr/"]
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://127.0.0.1:8983/solr/ckan/admin/ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 18
+      start_period: 40s
 
   redis:
     image: redis:${REDIS_VERSION}
+    networks:
+      - redisnet
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "-e", "QUIT"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+networks:
+  ckannet:
+  solrnet:
+    internal: true
+  dbnet:
+    internal: true
+  redisnet:
+    internal: true

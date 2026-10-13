@@ -17,7 +17,14 @@ cp .env.example .env
 docker compose --env-file .env.example -f docker-compose.yml config --quiet
 docker compose --env-file .env.example -f docker-compose.dev.yml config --quiet
 tests/test_operations.sh
+python3 tests/test_compose_contract.py
+tests/test_compose_persistence.sh
 ```
+
+`test_compose_contract.py` confere dependências, healthchecks e volumes sem subir
+containers. `test_compose_persistence.sh` sobe PostgreSQL, Solr e Redis num
+projeto Compose isolado, recria os containers e confirma que `pg_data`,
+`solr_data` e `ckan_storage` sobrevivem a `docker compose down`.
 
 O CI também testa a extensão e constrói as imagens sem publicá-las. Deploy,
 publicação em registro, migrations e alterações na EC2 pertencem a um fluxo de

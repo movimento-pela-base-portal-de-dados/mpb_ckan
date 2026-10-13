@@ -26,6 +26,20 @@ jobs:
           docker compose --env-file .env.example -f docker-compose.dev.yml config --quiet
       - name: Run operational checks
         run: tests/test_operations.sh
+      - name: Validate Compose contract
+        run: python3 tests/test_compose_contract.py
+
+  compose-persistence:
+    name: Compose persistence
+    needs: shell-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate volumes survive compose down
+        run: |
+          cp .env.example .env
+          tests/test_compose_persistence.sh
 
   docker-build:
     name: Production image build
