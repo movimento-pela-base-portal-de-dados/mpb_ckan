@@ -45,6 +45,27 @@ Atalhos disponíveis:
 | `bin/reload` | Recarrega o processo Python |
 | `bin/restart` | Reinicia somente o CKAN de desenvolvimento |
 
+### Extensão `ckanext-mpb`
+
+A extensão do portal fica em `src/ckanext-mpb` e é ativada pelo plugin `mpb`
+em `CKAN__PLUGINS`. A imagem base carrega esses plugins antes de executar
+`/docker-entrypoint.d`, por isso o container de desenvolvimento instala as
+extensões de `src/` antes de iniciar o CKAN
+(`ckan/setup/start_ckan_development_with_extensions.sh`). Em produção a
+extensão é instalada no build da imagem. `bin/install_src` continua disponível
+para instalar também `requirements.txt` e `dev-requirements.txt`.
+
+Stacks locais criadas antes da renomeação de `ckanext-abc` para `ckanext-mpb`
+precisam de uma limpeza única; sem ela, cada processo Python registra um erro
+do pacote antigo:
+
+```bash
+# atualizar CKAN__PLUGINS no .env conforme o .env.example
+bin/compose up -d --build --wait
+bin/compose exec ckan-dev pip uninstall -y ckanext-abc
+bin/restart
+```
+
 ## Diagnóstico local
 
 ```bash

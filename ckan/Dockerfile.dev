@@ -6,6 +6,7 @@ RUN  pip3 install  -e "git+https://github.com/ckan/ckanext-scheming.git#egg=ckan
     pip3 install -e 'git+https://github.com/ckan/ckanext-pdfview#egg=ckanext-pdfview'
     
 COPY --chown=ckan-sys:ckan-sys docker-entrypoint.d/* /docker-entrypoint.d/
+COPY --chmod=755 setup/start_ckan_development_with_extensions.sh /usr/local/sbin/
 COPY --chown=ckan-sys:ckan-sys patches ${APP_DIR}/patches
 COPY ./ckan_dataset_schema.yaml ${APP_DIR}/src/ckanext-scheming/ckanext/scheming
 
@@ -19,3 +20,5 @@ RUN for d in $APP_DIR/patches/*; do \
             done ; \
         fi ; \
     done
+
+CMD ["/usr/local/sbin/start_ckan_development_with_extensions.sh"]

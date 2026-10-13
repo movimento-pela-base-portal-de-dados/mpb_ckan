@@ -1,4 +1,5 @@
 import json
+import re
 
 import pytest
 
@@ -6,7 +7,7 @@ from ckan.tests import factories
 
 
 pytestmark = [
-    pytest.mark.ckan_config("ckan.plugins", "abc datastore"),
+    pytest.mark.ckan_config("ckan.plugins", "mpb datastore"),
     pytest.mark.usefixtures("with_plugins"),
     pytest.mark.usefixtures("clean_db"),
 ]
@@ -33,16 +34,36 @@ def test_catalog_homepage_is_available(app):
     assert "html" in response.content_type
 
 
+@pytest.mark.ckan_config("ckan.site_title", "Portal de Teste MPB")
+@pytest.mark.ckan_config("ckan.site_logo", "")
+def test_homepage_uses_configured_identity(app):
+    body = app.get("/").get_data(as_text=True)
+    title = " ".join(re.search(r"<title>(.*?)</title>", body, re.S).group(1).split())
+
+    assert title.endswith("Portal de Teste MPB")
+    assert "Bem-vindo(a) ao Portal de Teste MPB" in body
+    assert "Sobre Portal de Teste MPB" in body or "About Portal de Teste MPB" in body
+    assert "Bem Comum" not in body
+    assert "/logo.png" not in body
+
+
+def test_homepage_uses_portal_defaults(app):
+    body = app.get("/").get_data(as_text=True)
+
+    assert "Bem-vindo(a) ao Portal de Dados Movimento pela Base" in body
+    assert "ckan-logo.png" not in body
+
+
 def test_catalog_can_create_search_and_show_dataset(app):
     headers = _admin_headers()
     payload = {
-        "name": "abc-catalog-test-dataset",
-        "title": "ABC catalog test dataset",
+        "name": "mpb-catalog-test-dataset",
+        "title": "MPB catalog test dataset",
         "notes": "Synthetic fixture used by the repository test suite.",
-        "tags": [{"name": "abc-test"}],
+        "tags": [{"name": "mpb-test"}],
         "resources": [
             {
-                "url": "https://example.org/abc-test.csv",
+                "url": "https://example.org/mpb-test.csv",
                 "name": "Synthetic CSV resource",
                 "format": "CSV",
             }
@@ -64,7 +85,7 @@ def test_catalog_can_create_search_and_show_dataset(app):
     ).json
     assert shown["success"] is True
     assert shown["result"]["title"] == payload["title"]
-    assert shown["result"]["tags"][0]["name"] == "abc-test"
+    assert shown["result"]["tags"][0]["name"] == "mpb-test"
     assert shown["result"]["resources"][0]["format"] == "CSV"
 
     searched = app.get(
@@ -77,7 +98,7 @@ def test_catalog_can_create_search_and_show_dataset(app):
 
 def test_datastore_resource_can_be_written_and_read(app):
     headers = _admin_headers()
-    resource = factories.Resource(url="https://example.org/abc-test.csv")
+    resource = factories.Resource(url="https://example.org/mpb-test.csv")
 
     created = _post_json(
         app,

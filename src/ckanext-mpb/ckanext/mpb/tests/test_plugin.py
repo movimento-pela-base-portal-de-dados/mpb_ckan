@@ -51,13 +51,13 @@ import pytest
 
 from ckan.plugins import plugin_loaded
 
-import ckanext.abc.plugin as plugin
+import ckanext.mpb.plugin as plugin
 
 
-@pytest.mark.ckan_config("ckan.plugins", "abc")
+@pytest.mark.ckan_config("ckan.plugins", "mpb")
 @pytest.mark.usefixtures("with_plugins")
 def test_plugin():
-    assert plugin_loaded("abc")
+    assert plugin_loaded("mpb")
 
 
 def test_plugin_registers_theme_resources(monkeypatch):
@@ -80,10 +80,43 @@ def test_plugin_registers_theme_resources(monkeypatch):
     )
 
     config = {}
-    plugin.AbcPlugin().update_config(config)
+    plugin.MpbPlugin().update_config(config)
 
     assert calls == [
         ("templates", config, "templates"),
         ("public", config, "public"),
-        ("resource", "assets", "abc"),
+        ("resource", "assets", "mpb"),
     ]
+
+
+def test_portal_defaults_replace_ckan_defaults():
+    config = {
+        "ckan.site_title": "CKAN",
+        "ckan.site_logo": "/base/images/ckan-logo.png",
+    }
+
+    plugin.apply_portal_defaults(config)
+
+    assert config == plugin.PORTAL_DEFAULTS
+
+
+def test_portal_defaults_fill_missing_options():
+    config = {}
+
+    plugin.apply_portal_defaults(config)
+
+    assert config == plugin.PORTAL_DEFAULTS
+
+
+def test_portal_defaults_keep_configured_values():
+    config = {
+        "ckan.site_title": "Portal de Homologação",
+        "ckan.site_logo": "/logo-mpb.svg",
+    }
+
+    plugin.apply_portal_defaults(config)
+
+    assert config == {
+        "ckan.site_title": "Portal de Homologação",
+        "ckan.site_logo": "/logo-mpb.svg",
+    }
