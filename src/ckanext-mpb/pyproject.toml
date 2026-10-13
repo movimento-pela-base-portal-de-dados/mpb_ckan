@@ -1,10 +1,10 @@
 [project]
-name = "ckanext-abc"
+name = "ckanext-mpb"
 version = "0.0.1"
-description = "Custom extension for ABC Ckan Setup"
+description = "Extensão CKAN do Portal de Dados Movimento pela Base"
 readme = "README.md"
 authors = [
-    {name = "Base dos Dados"}
+    {name = "Movimento pela Base"}
 ]
 license = "AGPL-3.0-or-later"
 classifiers = [
@@ -18,10 +18,10 @@ keywords = [ "CKAN", ]
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/Basedosdados/ckanext-abc"
+Homepage = "https://github.com/movimento-pela-base-portal-de-dados/mpb_ckan"
 
 [project.entry-points."ckan.plugins"]
-abc = "ckanext.abc.plugin:AbcPlugin"
+mpb = "ckanext.mpb.plugin:MpbPlugin"
 
 
 [build-system]

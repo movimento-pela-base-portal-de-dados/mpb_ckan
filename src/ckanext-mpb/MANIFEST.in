@@ -1,0 +1,6 @@
+include README.rst
+include LICENSE
+include requirements.txt
+recursive-include ckanext/mpb *.html *.json *.js *.less *.css *.mo *.yml
+recursive-include ckanext/mpb/migration *.ini *.py *.mako
+recursive-include ckanext/mpb/public *.*

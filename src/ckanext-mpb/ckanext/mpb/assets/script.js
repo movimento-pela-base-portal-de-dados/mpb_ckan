@@ -1,4 +1,4 @@
-ckan.module("abc-module", function ($, _) {
+ckan.module("mpb-module", function ($, _) {
   "use strict";
   return {
     options: {

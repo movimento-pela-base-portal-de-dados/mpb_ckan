@@ -10,8 +10,8 @@ COPY --chown=ckan-sys:ckan-sys ckan/docker-entrypoint.d/03_setup_scheming.sh /do
 COPY --chown=ckan-sys:ckan-sys ckan/patches ${APP_DIR}/patches
 COPY ckan/ckan_dataset_schema.yaml ${APP_DIR}/src/ckanext-scheming/ckanext/scheming
 
-COPY --chown=ckan-sys:ckan-sys src/ckanext-abc /srv/app/src_extensions/ckanext-abc
-RUN pip3 install -e /srv/app/src_extensions/ckanext-abc
+COPY --chown=ckan-sys:ckan-sys src/ckanext-mpb /srv/app/src_extensions/ckanext-mpb
+RUN pip3 install -e /srv/app/src_extensions/ckanext-mpb
 
 
 #

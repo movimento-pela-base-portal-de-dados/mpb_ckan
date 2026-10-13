@@ -51,13 +51,13 @@ import pytest
 
 from ckan.plugins import plugin_loaded
 
-import ckanext.abc.plugin as plugin
+import ckanext.mpb.plugin as plugin
 
 
-@pytest.mark.ckan_config("ckan.plugins", "abc")
+@pytest.mark.ckan_config("ckan.plugins", "mpb")
 @pytest.mark.usefixtures("with_plugins")
 def test_plugin():
-    assert plugin_loaded("abc")
+    assert plugin_loaded("mpb")
 
 
 def test_plugin_registers_theme_resources(monkeypatch):
@@ -80,10 +80,10 @@ def test_plugin_registers_theme_resources(monkeypatch):
     )
 
     config = {}
-    plugin.AbcPlugin().update_config(config)
+    plugin.MpbPlugin().update_config(config)
 
     assert calls == [
         ("templates", config, "templates"),
         ("public", config, "public"),
-        ("resource", "assets", "abc"),
+        ("resource", "assets", "mpb"),
     ]
