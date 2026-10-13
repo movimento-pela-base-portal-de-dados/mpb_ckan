@@ -7,10 +7,10 @@
       {{ h.render_markdown(intro) | safe }}
     {% else %}
     <div>
-      <h1 class="page-heading" style="text-align: center; font-weight: bold;">Bem vindo(a) ao Catálogo de dados da Associação Bem Comum</h1>
-     
-      <p>
-        Texto de apresentação do potal </p>
+      <h1 class="page-heading" style="text-align: center; font-weight: bold;">Bem-vindo(a) ao {{ g.site_title }}</h1>
+      {% if g.site_description %}
+      <p>{{ g.site_description }}</p>
+      {% endif %}
     </div>
 
     {% endif %}

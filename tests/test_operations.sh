@@ -22,7 +22,7 @@ PATH="${FAKE_BIN}:${PATH}" "${ROOT}/bin/daily-restart"
 grep -Eq '^compose -f .*/docker-compose\.yml down$' "${FAKE_DOCKER_LOG}"
 grep -Eq '^compose -f .*/docker-compose\.yml up -d --wait$' "${FAKE_DOCKER_LOG}"
 
-for script in "${ROOT}"/bin/* "${ROOT}"/ckan/docker-entrypoint.d/*.sh "${ROOT}"/postgresql/docker-entrypoint-initdb.d/*.sh; do
+for script in "${ROOT}"/bin/* "${ROOT}"/ckan/docker-entrypoint.d/*.sh "${ROOT}"/ckan/setup/*.sh "${ROOT}"/postgresql/docker-entrypoint-initdb.d/*.sh; do
   bash -n "${script}"
 done
 
