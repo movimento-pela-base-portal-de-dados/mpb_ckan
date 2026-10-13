@@ -87,3 +87,36 @@ def test_plugin_registers_theme_resources(monkeypatch):
         ("public", config, "public"),
         ("resource", "assets", "mpb"),
     ]
+
+
+def test_portal_defaults_replace_ckan_defaults():
+    config = {
+        "ckan.site_title": "CKAN",
+        "ckan.site_logo": "/base/images/ckan-logo.png",
+    }
+
+    plugin.apply_portal_defaults(config)
+
+    assert config == plugin.PORTAL_DEFAULTS
+
+
+def test_portal_defaults_fill_missing_options():
+    config = {}
+
+    plugin.apply_portal_defaults(config)
+
+    assert config == plugin.PORTAL_DEFAULTS
+
+
+def test_portal_defaults_keep_configured_values():
+    config = {
+        "ckan.site_title": "Portal de Homologação",
+        "ckan.site_logo": "/logo-mpb.svg",
+    }
+
+    plugin.apply_portal_defaults(config)
+
+    assert config == {
+        "ckan.site_title": "Portal de Homologação",
+        "ckan.site_logo": "/logo-mpb.svg",
+    }

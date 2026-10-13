@@ -1,4 +1,5 @@
 import json
+import re
 
 import pytest
 
@@ -31,6 +32,26 @@ def test_catalog_homepage_is_available(app):
 
     assert response.status_code == 200
     assert "html" in response.content_type
+
+
+@pytest.mark.ckan_config("ckan.site_title", "Portal de Teste MPB")
+@pytest.mark.ckan_config("ckan.site_logo", "")
+def test_homepage_uses_configured_identity(app):
+    body = app.get("/").get_data(as_text=True)
+    title = " ".join(re.search(r"<title>(.*?)</title>", body, re.S).group(1).split())
+
+    assert title.endswith("Portal de Teste MPB")
+    assert "Bem-vindo(a) ao Portal de Teste MPB" in body
+    assert "Sobre Portal de Teste MPB" in body or "About Portal de Teste MPB" in body
+    assert "Bem Comum" not in body
+    assert "/logo.png" not in body
+
+
+def test_homepage_uses_portal_defaults(app):
+    body = app.get("/").get_data(as_text=True)
+
+    assert "Bem-vindo(a) ao Portal de Dados Movimento pela Base" in body
+    assert "ckan-logo.png" not in body
 
 
 def test_catalog_can_create_search_and_show_dataset(app):
