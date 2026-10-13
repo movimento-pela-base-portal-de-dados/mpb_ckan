@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -18,6 +19,8 @@ DATA_VOLUMES = {
 APP_VOLUME = ("ckan_storage", "/var/lib/ckan")
 EPHEMERAL_SERVICES = ("redis", "datapusher")
 HTTP_HEALTHCHECKS = ("ckan", "ckan-dev", "datapusher", "solr")
+CKAN_IMAGE_SOURCES = ("ckan/Dockerfile", "ckan/Dockerfile.dev", ".github/workflows/test.yml")
+CKAN_IMAGE_TAG = re.compile(r"\bckan/ckan-(?:base|dev|solr|postgres-dev):(\d+\.\d+)")
 
 
 class ContractError(AssertionError):
@@ -208,14 +211,40 @@ def assert_stack(filename: str, app_service: str) -> None:
         )
 
 
+def env_example() -> dict[str, str]:
+    values = {}
+    for line in ENV_FILE.read_text().splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            key, value = line.split("=", 1)
+            values[key] = value.strip().strip('"')
+    return values
+
+
+def assert_ckan_versions() -> None:
+    env = env_example()
+    expected = ".".join(env.get("CKAN_VERSION", "").split(".")[:2])
+    if not expected:
+        raise ContractError("CKAN_VERSION ausente em .env.example.")
+    solr = env.get("SOLR_IMAGE_VERSION", "")
+    found = {f"SOLR_IMAGE_VERSION={solr}": solr.split("-")[0]}
+    for source in CKAN_IMAGE_SOURCES:
+        for match in CKAN_IMAGE_TAG.finditer((ROOT / source).read_text()):
+            found[f"{source}: {match.group(0)}"] = match.group(1)
+    divergent = sorted(origin for origin, version in found.items() if version != expected)
+    if divergent:
+        raise ContractError(f"Versões do CKAN divergem de CKAN_VERSION={expected}: {divergent}")
+
+
 def main() -> int:
     try:
+        assert_ckan_versions()
         assert_stack("docker-compose.yml", "ckan")
         assert_stack("docker-compose.dev.yml", "ckan-dev")
     except ContractError as exc:
         print(f"Contrato do Compose reprovado: {exc}", file=sys.stderr)
         return 1
-    print("Contrato do Compose validado: dependências, healthchecks e volumes.")
+    print("Contrato do Compose validado: versões do CKAN, dependências, healthchecks e volumes.")
     return 0
 
 
