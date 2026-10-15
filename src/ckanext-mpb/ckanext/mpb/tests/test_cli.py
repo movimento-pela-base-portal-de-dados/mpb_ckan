@@ -4,6 +4,7 @@ import ckan.model as model
 import ckan.plugins.toolkit as toolkit
 from ckan.tests import factories, helpers
 
+from ckanext.mpb import constants
 from ckanext.mpb.cli import mpb
 from ckanext.mpb.plugin import MpbPlugin
 
@@ -84,7 +85,7 @@ def test_setup_portal_restores_editor_role(setup_portal):
 
 
 def test_setup_portal_requires_pipeline_user_email(cli, ckan_config, monkeypatch):
-    monkeypatch.setitem(ckan_config, "ckanext.mpb.pipeline_user.email", "")
+    monkeypatch.setitem(ckan_config, constants.PIPELINE_USER_EMAIL, "")
 
     result = cli.invoke(mpb, ["setup-portal"])
 

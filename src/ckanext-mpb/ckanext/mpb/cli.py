@@ -4,8 +4,7 @@ import click
 
 import ckan.plugins.toolkit as toolkit
 
-
-PIPELINE_USER_CAPACITY = "editor"
+from ckanext.mpb import constants as c
 
 
 @click.group(short_help="Comandos do Portal de Dados Movimento pela Base.")
@@ -16,10 +15,10 @@ def mpb():
 @mpb.command("setup-portal")
 def setup_portal():
     """Cria a organização do portal e o usuário de serviço das pipelines."""
-    email = toolkit.config.get("ckanext.mpb.pipeline_user.email")
+    email = toolkit.config.get(c.PIPELINE_USER_EMAIL)
     if not email:
         raise click.ClickException(
-            "Defina ckanext.mpb.pipeline_user.email (CKANEXT__MPB__PIPELINE_USER__EMAIL)."
+            f"Defina {c.PIPELINE_USER_EMAIL} (CKANEXT__MPB__PIPELINE_USER__EMAIL)."
         )
 
     site_user = toolkit.get_action("get_site_user")({"ignore_auth": True}, {})
@@ -27,16 +26,14 @@ def setup_portal():
 
     organization = ensure_organization(
         context,
-        toolkit.config.get("ckanext.mpb.organization.name"),
-        toolkit.config.get("ckanext.mpb.organization.title"),
+        toolkit.config.get(c.ORGANIZATION_NAME),
+        toolkit.config.get(c.ORGANIZATION_TITLE),
     )
-    user = ensure_user(
-        context, toolkit.config.get("ckanext.mpb.pipeline_user.name"), email
-    )
-    ensure_membership(context, organization, user, PIPELINE_USER_CAPACITY)
+    user = ensure_user(context, toolkit.config.get(c.PIPELINE_USER_NAME), email)
+    ensure_membership(context, organization, user, c.PIPELINE_USER_CAPACITY)
 
     click.secho(
-        f"Usuário {user['name']} é {PIPELINE_USER_CAPACITY} da organização "
+        f"Usuário {user['name']} é {c.PIPELINE_USER_CAPACITY} da organização "
         f"{organization['name']}.",
         fg="green",
     )
