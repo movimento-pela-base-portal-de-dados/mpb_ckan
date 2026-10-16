@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import pytest
 
 import ckan.model as model
@@ -7,31 +5,10 @@ import ckan.plugins.toolkit as toolkit
 from ckan.tests import factories, helpers
 
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[5]
-ENV_EXAMPLE = REPOSITORY_ROOT / ".env.example"
-
 pytestmark = [
     pytest.mark.ckan_config("ckan.plugins", "mpb activity"),
     pytest.mark.usefixtures("with_plugins"),
 ]
-
-
-def _env_example():
-    values = {}
-    for line in ENV_EXAMPLE.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if line and not line.startswith("#") and "=" in line:
-            key, value = line.split("=", 1)
-            values[key] = value.strip().strip('"')
-    return values
-
-
-def _auth_config():
-    return {
-        key.lower().replace("__", "."): toolkit.asbool(value)
-        for key, value in _env_example().items()
-        if key.startswith("CKAN__AUTH__")
-    }
 
 
 @pytest.fixture
@@ -40,27 +17,21 @@ def clean_db(with_plugins, reset_db, migrate_db_for):
     migrate_db_for("activity")
 
 
-@pytest.fixture
-def portal_auth(ckan_config, monkeypatch):
-    for key, value in _auth_config().items():
-        monkeypatch.setitem(ckan_config, key, value)
-
-
 def _assert_denied(action, user, **data_dict):
     context = {"user": user["name"] if user else "", "model": model}
     with pytest.raises(toolkit.NotAuthorized):
         helpers.call_auth(action, context, **data_dict)
 
 
-def test_env_example_enables_portal_plugins():
-    plugins = _env_example()["CKAN__PLUGINS"].split()
+def test_env_example_enables_portal_plugins(env_example):
+    plugins = env_example["CKAN__PLUGINS"].split()
 
     assert {"mpb", "scheming_datasets", "activity", "pdf_view"} <= set(plugins)
     assert plugins[-1] == "envvars"
 
 
-def test_env_example_restricts_auth_defaults():
-    assert _auth_config() == {
+def test_env_example_restricts_auth_defaults(auth_config):
+    assert auth_config == {
         "ckan.auth.anon_create_dataset": False,
         "ckan.auth.create_unowned_dataset": False,
         "ckan.auth.create_dataset_if_not_in_organization": False,

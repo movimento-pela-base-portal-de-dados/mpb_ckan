@@ -52,6 +52,7 @@ import pytest
 from ckan.plugins import plugin_loaded
 
 import ckanext.mpb.plugin as plugin
+from ckanext.mpb import constants
 
 
 @pytest.mark.ckan_config("ckan.plugins", "mpb")
@@ -97,7 +98,7 @@ def test_portal_defaults_replace_ckan_defaults():
 
     plugin.apply_portal_defaults(config)
 
-    assert config == plugin.PORTAL_DEFAULTS
+    assert config == constants.PORTAL_DEFAULTS
 
 
 def test_portal_defaults_fill_missing_options():
@@ -105,7 +106,7 @@ def test_portal_defaults_fill_missing_options():
 
     plugin.apply_portal_defaults(config)
 
-    assert config == plugin.PORTAL_DEFAULTS
+    assert config == constants.PORTAL_DEFAULTS
 
 
 def test_portal_defaults_keep_configured_values():

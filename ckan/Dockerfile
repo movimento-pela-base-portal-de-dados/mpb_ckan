@@ -7,6 +7,7 @@ RUN  pip3 install  -e "git+https://github.com/ckan/ckanext-scheming.git@8d303d50
 
 COPY --chown=ckan-sys:ckan-sys ckan/docker-entrypoint.d/01_setup_datapusher.sh /docker-entrypoint.d/
 COPY --chown=ckan-sys:ckan-sys ckan/docker-entrypoint.d/03_setup_scheming.sh /docker-entrypoint.d/
+COPY --chown=ckan-sys:ckan-sys ckan/docker-entrypoint.d/04_setup_portal.sh /docker-entrypoint.d/
 COPY --chown=ckan-sys:ckan-sys ckan/patches ${APP_DIR}/patches
 COPY ckan/ckan_dataset_schema.yaml ${APP_DIR}/src/ckanext-scheming/ckanext/scheming
 
