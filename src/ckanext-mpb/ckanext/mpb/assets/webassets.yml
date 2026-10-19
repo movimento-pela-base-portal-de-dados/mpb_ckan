@@ -1,14 +1,5 @@
-# mpb-js:
-#   filter: rjsmin
-#   output: ckanext-mpb/%(version)s-mpb.js
-#   contents:
-#     - js/mpb.js
-#   extra:
-#     preload:
-#       - base/main
-
-# mpb-css:
-#   filter: cssrewrite
-#   output: ckanext-mpb/%(version)s-mpb.css
-#   contents:
-#     - css/mpb.css
+mpb-css:
+  filter: cssrewrite
+  output: ckanext-mpb/%(version)s-mpb.css
+  contents:
+    - custom.css

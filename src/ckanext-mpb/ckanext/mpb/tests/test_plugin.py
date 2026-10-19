@@ -90,6 +90,16 @@ def test_plugin_registers_theme_resources(monkeypatch):
     ]
 
 
+@pytest.mark.ckan_config("ckan.plugins", "mpb")
+@pytest.mark.usefixtures("with_plugins")
+def test_home_page_uses_portal_assets_and_texts(app):
+    body = app.get("/").body
+
+    assert "ckanext-mpb/" in body and "-mpb.css" in body
+    assert 'href="/custom.css"' not in body
+    assert 'placeholder="Ex.: matrículas no ensino médio"' in body
+
+
 def test_portal_defaults_replace_ckan_defaults():
     config = {
         "ckan.site_title": "CKAN",
