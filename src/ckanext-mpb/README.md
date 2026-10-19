@@ -3,7 +3,8 @@
 Extensão CKAN do Portal de Dados Movimento pela Base. Registra os templates,
 arquivos públicos e assets do portal (plugin `mpb`) e o comando
 `ckan mpb setup-portal`, que cria a organização do portal e o usuário de
-serviço das pipelines.
+serviço das pipelines. O schema de datasets usado pelo `ckanext-scheming` fica
+em `ckanext/mpb/schemas/dataset.yaml`.
 
 Compatível com CKAN 2.11, a versão das imagens em `ckan/Dockerfile*`.
 
