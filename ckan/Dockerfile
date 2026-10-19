@@ -2,14 +2,13 @@ FROM ckan/ckan-base:2.11
 
 USER root
 
-RUN  pip3 install  -e "git+https://github.com/ckan/ckanext-scheming.git@8d303d5040d44e666c5651d00e7cec4f615f0c25#egg=ckanext-scheming" && \
-    pip3 install -e 'git+https://github.com/ckan/ckanext-pdfview.git@0.0.9#egg=ckanext-pdfview'
+COPY ckan/requirements.txt ${APP_DIR}/requirements.txt
+RUN pip3 install -r ${APP_DIR}/requirements.txt
 
 COPY --chown=ckan-sys:ckan-sys ckan/docker-entrypoint.d/01_setup_datapusher.sh /docker-entrypoint.d/
 COPY --chown=ckan-sys:ckan-sys ckan/docker-entrypoint.d/03_setup_scheming.sh /docker-entrypoint.d/
 COPY --chown=ckan-sys:ckan-sys ckan/docker-entrypoint.d/04_setup_portal.sh /docker-entrypoint.d/
 COPY --chown=ckan-sys:ckan-sys ckan/patches ${APP_DIR}/patches
-COPY ckan/ckan_dataset_schema.yaml ${APP_DIR}/src/ckanext-scheming/ckanext/scheming
 
 COPY --chown=ckan-sys:ckan-sys src/ckanext-mpb /srv/app/src_extensions/ckanext-mpb
 RUN pip3 install -e /srv/app/src_extensions/ckanext-mpb

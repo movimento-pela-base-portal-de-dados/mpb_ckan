@@ -90,6 +90,7 @@ jobs:
       - name: Install extension requirements
         working-directory: src/ckanext-mpb
         run: |
+          pip install -r ../../ckan/requirements.txt
           pip install -r requirements.txt
           pip install -r dev-requirements.txt
           pip install -e .

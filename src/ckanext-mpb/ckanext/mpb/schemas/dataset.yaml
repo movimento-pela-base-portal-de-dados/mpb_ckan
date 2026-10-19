@@ -1,0 +1,70 @@
+scheming_version: 2
+dataset_type: dataset
+about: Schema de conjuntos de dados do Portal de Dados Movimento pela Base
+about_url: https://github.com/ckan/ckanext-scheming
+
+dataset_fields:
+  - field_name: title
+    label: Título
+    preset: title
+    form_placeholder: "ex.: Um título descritivo"
+
+  - field_name: name
+    label: URL
+    preset: dataset_slug
+    form_placeholder: "ex.: meu-conjunto-de-dados"
+
+  - field_name: notes
+    label: Descrição
+    form_snippet: markdown.html
+    form_placeholder: "ex.: Informações úteis sobre os dados"
+
+  - field_name: tag_string
+    label: Etiquetas
+    preset: tag_string_autocomplete
+    form_placeholder: "ex.: educação, matrículas, ensino médio"
+    required: true
+
+  - field_name: owner_org
+    label: Organização
+    preset: dataset_organization
+
+  - field_name: url
+    label: Fonte
+    form_placeholder: https://exemplo.org/dados.json
+    display_property: foaf:homepage
+    display_snippet: link.html
+
+  - field_name: version
+    label: Versão
+    form_placeholder: "1.0"
+
+  - field_name: maintainer
+    label: Mantenedor
+    form_placeholder: "ex.: Nome da pessoa ou equipe responsável"
+    display_property: dc:contributor
+
+  - field_name: maintainer_email
+    label: E-mail do mantenedor
+    form_placeholder: "ex.: contato@exemplo.org"
+    display_property: dc:contributor
+    display_snippet: email.html
+    display_email_name_field: maintainer
+
+resource_fields:
+  - field_name: url
+    label: URL
+    preset: resource_url_upload
+
+  - field_name: name
+    label: Nome
+    form_placeholder: "ex.: Dados de 2024"
+
+  - field_name: description
+    label: Descrição
+    form_snippet: markdown.html
+    form_placeholder: "ex.: Informações úteis sobre o recurso"
+
+  - field_name: format
+    label: Formato
+    preset: resource_format_autocomplete
