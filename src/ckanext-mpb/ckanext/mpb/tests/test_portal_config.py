@@ -4,6 +4,8 @@ import ckan.model as model
 import ckan.plugins.toolkit as toolkit
 from ckan.tests import factories, helpers
 
+from ckanext.mpb import constants
+
 
 pytestmark = [
     pytest.mark.ckan_config("ckan.plugins", "mpb activity"),
@@ -28,6 +30,12 @@ def test_env_example_enables_portal_plugins(env_example):
 
     assert {"mpb", "scheming_datasets", "activity", "pdf_view"} <= set(plugins)
     assert plugins[-1] == "envvars"
+
+
+def test_env_example_offers_only_portuguese(env_example):
+    assert env_example["CKAN__LOCALE_DEFAULT"] == "pt_BR"
+    assert env_example["CKAN__LOCALES_OFFERED"] == "pt_BR"
+    assert env_example["CKAN__DISPLAY_TIMEZONE"] == "America/Sao_Paulo"
 
 
 def test_env_example_restricts_auth_defaults(auth_config):
@@ -94,3 +102,30 @@ def test_activity_stream_records_dataset_changes():
     activities = helpers.call_action("package_activity_list", id=dataset["id"])
 
     assert [activity["activity_type"] for activity in activities] == ["new package"]
+
+
+def test_footer_has_no_language_selector(app):
+    response = app.get("/")
+
+    assert 'id="field-lang-select"' not in response.body
+
+
+def test_about_page_shows_portal_default(app):
+    response = app.get(toolkit.url_for("home.about"))
+
+    assert constants.PORTAL_DEFAULTS["ckan.site_about"] in response.body
+
+
+@pytest.mark.usefixtures("clean_db")
+def test_sysadmin_text_replaces_portal_default(app):
+    sysadmin = factories.Sysadmin()
+    helpers.call_action(
+        "config_option_update",
+        {"user": sysadmin["name"]},
+        **{"ckan.site_about": "Texto definido pela administração"},
+    )
+
+    response = app.get(toolkit.url_for("home.about"))
+
+    assert "Texto definido pela administração" in response.body
+    assert constants.PORTAL_DEFAULTS["ckan.site_about"] not in response.body

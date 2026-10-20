@@ -110,14 +110,14 @@ def test_portal_defaults_fill_missing_options():
 
 
 def test_portal_defaults_keep_configured_values():
-    config = {
+    configured = {
         "ckan.site_title": "Portal de Homologação",
         "ckan.site_logo": "/logo-mpb.svg",
+        "ckan.site_description": "Descrição de homologação",
+        "ckan.site_about": "Sobre o portal de homologação",
     }
+    config = dict(configured)
 
     plugin.apply_portal_defaults(config)
 
-    assert config == {
-        "ckan.site_title": "Portal de Homologação",
-        "ckan.site_logo": "/logo-mpb.svg",
-    }
+    assert config == configured
