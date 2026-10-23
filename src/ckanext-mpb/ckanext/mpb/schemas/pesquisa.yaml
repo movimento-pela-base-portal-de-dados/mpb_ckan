@@ -1,0 +1,155 @@
+scheming_version: 2
+dataset_type: pesquisa
+about: Schema de pesquisas do Portal de Dados Movimento pela Base
+about_url: https://github.com/ckan/ckanext-scheming
+
+dataset_fields:
+  - field_name: title
+    label: Título da pesquisa
+    preset: title
+    required: true
+    form_placeholder: "ex.: Um título descritivo"
+
+  - field_name: name
+    label: URL
+    preset: dataset_slug
+    form_placeholder: "ex.: minha-pesquisa"
+
+  - field_name: notes
+    label: Resumo
+    preset: markdown
+
+  - field_name: tag_string
+    label: Palavras-chave
+    preset: tag_string_autocomplete
+    form_placeholder: "ex.: currículo, BNCC, ensino médio"
+    required: true
+
+  - field_name: owner_org
+    label: Organização
+    preset: dataset_organization
+
+  - field_name: tema
+    label: Tema
+    preset: select
+    choices:
+      - value: conteudo_curricular
+        label: Conteúdo curricular
+      - value: implementacao
+        label: Implementação
+      - value: revisao_politica_curricular
+        label: Revisão de política curricular
+
+  - field_name: etapa
+    label: Etapa
+    preset: multiple_select
+    choices:
+      - value: educacao_infantil
+        label: Educação Infantil
+      - value: ensino_fundamental
+        label: Ensino Fundamental
+      - value: ensino_medio
+        label: Ensino Médio
+
+  - field_name: tipo_estudo
+    label: Tipo de estudo
+    preset: select
+    choices:
+      - value: analise
+        label: Análise
+      - value: artigo
+        label: Artigo
+      - value: benchmarking
+        label: Benchmarking
+      - value: boa_pratica
+        label: Boa Prática
+      - value: curso
+        label: Curso
+      - value: estudo_de_caso
+        label: Estudo de caso
+      - value: guia
+        label: Guia
+      - value: pesquisa
+        label: Pesquisa
+      - value: recomendacoes
+        label: Recomendações
+      - value: traducao
+        label: Tradução
+
+  - field_name: ano
+    label: Ano
+    validators: ignore_missing int_validator
+    form_placeholder: "ex.: 2024"
+
+  - field_name: observatorio
+    label: Observatório
+    preset: radio
+    choices:
+      - value: sim
+        label: Sim
+      - value: nao
+        label: Não
+      - value: site_mpb
+        label: Site MPB
+
+  - field_name: publico
+    label: Público
+    preset: multiple_text
+
+  - field_name: topico
+    label: Tópico
+    preset: multiple_text
+
+  - field_name: objetivo
+    label: Objetivo
+    preset: markdown
+
+  - field_name: apoio
+    label: Apoio
+    preset: multiple_text
+
+  - field_name: realizacao
+    label: Realização
+    preset: multiple_text
+
+  - field_name: recorte
+    label: Recorte
+    preset: multiple_select
+    choices:
+      - value: brasil
+        label: Brasil
+      - value: estadual
+        label: Estadual
+      - value: municipal
+        label: Municipal
+
+  - field_name: titulo_alternativo
+    label: Título alternativo
+
+  - field_name: termos_busca
+    label: Termos de busca
+    preset: multiple_text
+
+resource_fields:
+  - field_name: url
+    label: URL
+    preset: resource_url_upload
+
+  - field_name: name
+    label: Nome
+    form_placeholder: "ex.: Relatório"
+
+  - field_name: format
+    label: Formato
+    preset: resource_format_autocomplete
+
+  - field_name: tipo_documento
+    label: Tipo de documento
+    preset: select
+    choices:
+      - value: relatorio
+        label: Relatório
+      - value: sumario_executivo
+        label: Sumário executivo
+      - value: ficha_site
+        label: Ficha do site
