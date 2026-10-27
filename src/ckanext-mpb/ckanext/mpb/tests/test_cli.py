@@ -5,7 +5,7 @@ import ckan.plugins.toolkit as toolkit
 from ckan.tests import factories, helpers
 
 from ckanext.mpb import constants
-from ckanext.mpb.cli import mpb
+from ckanext.mpb.cli import load_catalog, mpb
 from ckanext.mpb.plugin import MpbPlugin
 
 
@@ -20,6 +20,16 @@ def portal_setup_config(ckan_config, monkeypatch, env_example):
     for key, value in env_example.items():
         if key.startswith("CKANEXT__MPB__"):
             monkeypatch.setitem(ckan_config, key.lower().replace("__", "."), value)
+
+
+@pytest.fixture
+def catalog(tmp_path, monkeypatch):
+    def write(content):
+        path = tmp_path / "catalog.yaml"
+        path.write_text(content, encoding="utf-8")
+        monkeypatch.setattr(constants, "CATALOG_PATH", path)
+
+    return write
 
 
 @pytest.fixture
@@ -113,3 +123,46 @@ def test_pipeline_user_publishes_only_in_portal_organization(setup_portal):
         )
     with pytest.raises(toolkit.NotAuthorized):
         helpers.call_auth("organization_create", dict(context), name="mpb-new-org")
+
+
+def test_versioned_catalog_is_valid():
+    catalog = load_catalog(constants.CATALOG_PATH)
+
+    assert set(catalog) >= {"organizations", "groups"}
+
+
+def test_setup_portal_creates_catalog_organizations_and_groups(setup_portal, catalog):
+    catalog(
+        """
+organizations:
+  - name: instituto-parceiro
+    title: Instituto Parceiro
+groups:
+  - name: curriculo
+    title: Currículo
+    description: Pesquisas sobre currículo.
+"""
+    )
+
+    setup_portal()
+    setup_portal()
+
+    assert helpers.call_action("organization_list") == [
+        "instituto-parceiro",
+        "movimento-pela-base",
+    ]
+    group = helpers.call_action("group_show", id="curriculo")
+    assert group["title"] == "Currículo"
+    assert group["description"] == "Pesquisas sobre currículo."
+    assert helpers.call_action("group_list") == ["curriculo"]
+
+
+def test_setup_portal_rejects_catalog_item_without_title(cli, catalog):
+    catalog("groups:\n  - name: curriculo\n")
+
+    result = cli.invoke(mpb, ["setup-portal"])
+
+    assert result.exit_code != 0
+    assert "precisa de name e title" in result.output
+    assert helpers.call_action("organization_list") == []
+    assert helpers.call_action("group_list") == []

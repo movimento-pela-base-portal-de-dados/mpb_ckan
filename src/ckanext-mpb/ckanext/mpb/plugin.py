@@ -1,6 +1,8 @@
 import json
 from collections import OrderedDict
 
+from flask import has_request_context
+
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 
@@ -15,7 +17,10 @@ def apply_portal_defaults(config_):
 
 
 def pesquisa_facets():
-    return OrderedDict(c.PESQUISA_FACETS)
+    facets = OrderedDict(c.PESQUISA_FACETS)
+    if not toolkit.get_action("group_list")({"ignore_auth": True}, {"limit": 1}):
+        del facets["groups"]
+    return facets
 
 
 def index_multivalued_fields(pkg_dict):
@@ -50,11 +55,33 @@ def label_facet_items(search_results):
     return search_results
 
 
+def requested_package_type(data_dict):
+    if data_dict and data_dict.get("type"):
+        return data_dict["type"]
+    if has_request_context():
+        return (toolkit.request.view_args or {}).get("package_type")
+    return None
+
+
+@toolkit.chained_auth_function
+@toolkit.auth_sysadmins_check
+def package_create(next_auth, context, data_dict=None):
+    package_type = requested_package_type(data_dict)
+    default_type = toolkit.config.get("ckan.default.package_type")
+    if package_type and package_type != default_type:
+        return {
+            "success": False,
+            "msg": f"Este portal só aceita datasets do tipo {default_type}.",
+        }
+    return next_auth(context, data_dict)
+
+
 class MpbPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IConfigDeclaration)
     plugins.implements(plugins.IClick)
     plugins.implements(plugins.IFacets, inherit=True)
+    plugins.implements(plugins.IAuthFunctions)
     plugins.implements(plugins.IPackageController, inherit=True)
 
     # IConfigurer
@@ -86,8 +113,16 @@ class MpbPlugin(plugins.SingletonPlugin):
             return facets_dict
         return pesquisa_facets()
 
+    def group_facets(self, facets_dict, group_type, package_type):
+        return pesquisa_facets()
+
     def organization_facets(self, facets_dict, organization_type, package_type):
         return pesquisa_facets()
+
+    # IAuthFunctions
+
+    def get_auth_functions(self):
+        return {"package_create": package_create}
 
     # IPackageController
 

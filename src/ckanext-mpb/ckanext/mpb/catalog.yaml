@@ -1,0 +1,7 @@
+# Organizações parceiras e categorias (grupos) criadas por `ckan mpb setup-portal`.
+# A organização principal vem de `ckanext.mpb.organization.*`.
+# Cada item precisa de `name` e `title`; os demais campos vão direto para o CKAN.
+
+organizations: []
+
+groups: []
