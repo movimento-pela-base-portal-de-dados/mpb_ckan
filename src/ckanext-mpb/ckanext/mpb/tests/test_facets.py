@@ -93,9 +93,32 @@ def test_search_page_shows_pesquisa_facets(app):
 
     body = app.get("/pesquisa/").get_data(as_text=True)
 
-    for title in constants.PESQUISA_FACETS.values():
-        assert title in body
+    for facet, title in constants.PESQUISA_FACETS.items():
+        assert (title in body) == (facet != "groups")
     assert "Ensino Médio" in body
     assert "Estudo de caso" in body
     assert "license_id" not in body
     assert "res_format" not in body
+
+
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
+def test_categories_facet_appears_when_groups_exist(app):
+    group = factories.Group(name="curriculo", title="Currículo")
+    _create_pesquisas()
+    sysadmin = factories.Sysadmin()
+    call_action(
+        "member_create",
+        context={"user": sysadmin["name"]},
+        id=group["id"],
+        object="mpb-pesquisa-teste",
+        object_type="package",
+        capacity="public",
+    )
+
+    search_body = app.get("/pesquisa/").get_data(as_text=True)
+    group_body = app.get("/group/curriculo").get_data(as_text=True)
+
+    assert "Categorias" in search_body
+    assert "Currículo" in search_body
+    assert "Etapa" in group_body
+    assert "license_id" not in group_body

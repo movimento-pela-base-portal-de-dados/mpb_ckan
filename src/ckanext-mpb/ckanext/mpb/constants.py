@@ -1,3 +1,6 @@
+from pathlib import Path
+
+
 PORTAL_DEFAULTS = {
     "ckan.site_title": "Portal de Dados Movimento pela Base",
     "ckan.site_logo": "",
@@ -30,6 +33,7 @@ DATASET_TYPE = "pesquisa"
 
 PESQUISA_FACETS = {
     "organization": "Organizações",
+    "groups": "Categorias",
     "tema": "Tema",
     "vocab_etapa": "Etapa",
     "tipo_estudo": "Tipo de estudo",
@@ -38,3 +42,5 @@ PESQUISA_FACETS = {
 }
 MULTIVALUED_FACETS = {"vocab_etapa": "etapa"}
 CHOICE_FACETS = {"tema": "tema", "vocab_etapa": "etapa", "tipo_estudo": "tipo_estudo"}
+
+CATALOG_PATH = Path(__file__).parent / "catalog.yaml"
