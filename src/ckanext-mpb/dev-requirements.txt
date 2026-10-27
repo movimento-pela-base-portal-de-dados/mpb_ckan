@@ -1,2 +1,2 @@
 pytest-ckan
-PyYAML>=6
+PyYAML>=6.0.3
