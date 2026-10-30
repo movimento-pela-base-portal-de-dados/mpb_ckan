@@ -1,6 +1,9 @@
 from pathlib import Path
 
 
+LICENSES_PATH = Path(__file__).parent / "licenses.json"
+DEFAULT_LICENSE_ID = "cc-by-4.0"
+
 PORTAL_DEFAULTS = {
     "ckan.site_title": "Portal de Dados Movimento pela Base",
     "ckan.site_logo": "",
@@ -9,6 +12,7 @@ PORTAL_DEFAULTS = {
         "O Portal de Dados Movimento pela Base reúne conjuntos de dados "
         "publicados pelo Movimento pela Base e por organizações parceiras."
     ),
+    "licenses_group_url": LICENSES_PATH.as_uri(),
 }
 
 CKAN_DEFAULTS = {
@@ -16,6 +20,7 @@ CKAN_DEFAULTS = {
     "ckan.site_logo": "/base/images/ckan-logo.png",
     "ckan.site_description": "",
     "ckan.site_about": "",
+    "licenses_group_url": "",
 }
 
 ORGANIZATION_NAME = "ckanext.mpb.organization.name"

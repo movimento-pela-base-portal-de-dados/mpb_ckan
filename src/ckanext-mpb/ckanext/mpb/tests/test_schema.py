@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 import yaml
 
+import ckan.model as model
 from ckan.logic import ValidationError
 from ckan.tests import factories
 from ckan.tests.helpers import call_action
@@ -54,6 +55,8 @@ PIPELINE_DATASET_CHOICES = {
     "recorte": ["brasil", "estadual", "municipal"],
 }
 PIPELINE_TIPO_DOCUMENTO_CHOICES = ["relatorio", "sumario_executivo", "ficha_site"]
+CKAN_ONLY_DATASET_FIELDS = {"license_id"}
+LICENSE_TITLE = "Creative Commons Atribuição 4.0 Internacional (CC BY 4.0)"
 
 
 def _schema():
@@ -91,7 +94,9 @@ def test_dataset_schema_contains_catalog_metadata_contract():
 def test_dataset_schema_matches_pipeline_mapping_fields():
     schema = _schema()
 
-    assert {field["field_name"] for field in schema["dataset_fields"]} == PIPELINE_DATASET_FIELDS
+    assert {field["field_name"] for field in schema["dataset_fields"]} == (
+        PIPELINE_DATASET_FIELDS | CKAN_ONLY_DATASET_FIELDS
+    )
     assert {field["field_name"] for field in schema["resource_fields"]} == PIPELINE_RESOURCE_FIELDS
 
 
@@ -203,6 +208,7 @@ def test_pesquisa_is_created_with_schema_fields():
         ({"tema": "inexistente"}, "tema"),
         ({"etapa": ["ensino_superior"]}, "etapa"),
         ({"ano": "dois mil"}, "ano"),
+        ({"license_id": "cc-nc"}, "license_id"),
     ],
 )
 def test_pesquisa_rejects_invalid_values(overrides, field_name):
@@ -217,3 +223,91 @@ def test_pesquisa_rejects_invalid_values(overrides, field_name):
         )
 
     assert field_name in error.value.error_dict
+
+
+@pytest.fixture
+def license_register():
+    if hasattr(model.Package, "_license_register"):
+        del model.Package._license_register
+    yield
+    if hasattr(model.Package, "_license_register"):
+        del model.Package._license_register
+
+
+@pytest.mark.ckan_config("ckan.plugins", "mpb scheming_datasets")
+@pytest.mark.ckan_config("scheming.dataset_schemas", SCHEMA_OPTION)
+@pytest.mark.usefixtures("with_plugins", "license_register")
+def test_portal_offers_cc_by_first():
+    licenses = call_action("license_list")
+
+    assert [license["id"] for license in licenses] == [
+        "cc-by-4.0",
+        "cc-by-sa-4.0",
+        "cc-by-nd-4.0",
+        "cc-by-nc-4.0",
+        "cc-by-nc-sa-4.0",
+        "cc-by-nc-nd-4.0",
+        "todos-os-direitos-reservados",
+    ]
+    assert licenses[0]["title"] == LICENSE_TITLE
+
+
+@pytest.mark.ckan_config("ckan.plugins", "mpb scheming_datasets")
+@pytest.mark.ckan_config("scheming.dataset_schemas", SCHEMA_OPTION)
+@pytest.mark.ckan_config("ckan.default.package_type", "pesquisa")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "license_register")
+def test_pesquisa_without_license_gets_cc_by(app):
+    sysadmin = factories.Sysadmin()
+    organization = factories.Organization()
+
+    created = call_action(
+        "package_create", context={"user": sysadmin["name"]}, **_pesquisa(organization["id"])
+    )
+    shown = call_action("package_show", id=created["id"])
+    body = app.get(f"/pesquisa/{created['name']}").get_data(as_text=True)
+
+    assert shown["license_id"] == "cc-by-4.0"
+    assert shown["license_title"] == LICENSE_TITLE
+    assert shown["isopen"] is True
+    assert LICENSE_TITLE in body
+    assert "https://creativecommons.org/licenses/by/4.0/deed.pt-br" in body
+
+
+@pytest.mark.ckan_config("ckan.plugins", "mpb scheming_datasets")
+@pytest.mark.ckan_config("scheming.dataset_schemas", SCHEMA_OPTION)
+@pytest.mark.usefixtures("with_plugins", "clean_db", "license_register")
+def test_pesquisa_keeps_edited_license_when_update_omits_it():
+    sysadmin = factories.Sysadmin()
+    organization = factories.Organization()
+    context = {"user": sysadmin["name"]}
+
+    created = call_action(
+        "package_create",
+        context=dict(context),
+        **_pesquisa(organization["id"], license_id="todos-os-direitos-reservados"),
+    )
+    updated = call_action(
+        "package_update",
+        context=dict(context),
+        **_pesquisa(organization["id"], id=created["id"], title="Título revisado"),
+    )
+
+    assert created["license_id"] == "todos-os-direitos-reservados"
+    assert updated["title"] == "Título revisado"
+    assert updated["license_id"] == "todos-os-direitos-reservados"
+    assert updated["isopen"] is False
+
+
+@pytest.mark.ckan_config("ckan.plugins", "mpb scheming_datasets")
+@pytest.mark.ckan_config("scheming.dataset_schemas", SCHEMA_OPTION)
+@pytest.mark.ckan_config("ckan.default.package_type", "pesquisa")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "license_register")
+def test_pesquisa_form_selects_cc_by_by_default(app):
+    sysadmin = factories.SysadminWithToken()
+
+    body = app.get("/pesquisa/new", headers={"Authorization": sysadmin["token"]}).get_data(
+        as_text=True
+    )
+
+    assert 'id="field-license_id"' in body
+    assert '<option value="cc-by-4.0" selected' in body
