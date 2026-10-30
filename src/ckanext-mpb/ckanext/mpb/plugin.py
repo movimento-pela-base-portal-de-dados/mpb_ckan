@@ -3,6 +3,7 @@ from collections import OrderedDict
 
 from flask import has_request_context
 
+import ckan.authz as authz
 import ckan.model as model
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
@@ -85,6 +86,22 @@ def package_create(next_auth, context, data_dict=None):
     return next_auth(context, data_dict)
 
 
+def group_create(context, data_dict=None):
+    user = context.get("user")
+    pipeline_user = toolkit.config.get(c.PIPELINE_USER_NAME)
+    organization = toolkit.config.get(c.ORGANIZATION_NAME)
+    if (
+        user
+        and user != pipeline_user
+        and authz.has_user_permission_for_group_or_org(organization, user, "create_dataset")
+    ):
+        return {"success": True}
+    return {
+        "success": False,
+        "msg": "Só editores do Movimento pela Base podem criar categorias.",
+    }
+
+
 class MpbPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IConfigDeclaration)
@@ -132,7 +149,7 @@ class MpbPlugin(plugins.SingletonPlugin):
     # IAuthFunctions
 
     def get_auth_functions(self):
-        return {"package_create": package_create}
+        return {"package_create": package_create, "group_create": group_create}
 
     # IValidators
 

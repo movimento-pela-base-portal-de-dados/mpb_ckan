@@ -45,7 +45,6 @@ def test_env_example_restricts_auth_defaults(auth_config):
         "ckan.auth.create_dataset_if_not_in_organization": False,
         "ckan.auth.user_create_organizations": False,
         "ckan.auth.user_delete_organizations": False,
-        "ckan.auth.user_create_groups": False,
         "ckan.auth.user_delete_groups": False,
         "ckan.auth.create_user_via_web": False,
         "ckan.auth.create_user_via_api": False,
@@ -79,6 +78,66 @@ class TestPortalAuthorization:
 
         _assert_denied("organization_create", user, name="mpb-org")
         _assert_denied("group_create", user, name="mpb-group")
+
+    def test_mpb_editor_can_create_group(self):
+        editor = factories.User()
+        factories.Organization(
+            name=constants.DEFAULT_ORGANIZATION_NAME,
+            users=[{"name": editor["name"], "capacity": "editor"}],
+        )
+        context = {"user": editor["name"], "model": model}
+
+        assert helpers.call_auth("group_create", context, name="mpb-categoria")
+
+    def test_only_mpb_editors_can_create_group(self):
+        member = factories.User()
+        pipeline_user = factories.User(name=constants.DEFAULT_PIPELINE_USER_NAME)
+        partner_editor = factories.User()
+        factories.Organization(
+            name=constants.DEFAULT_ORGANIZATION_NAME,
+            users=[
+                {"name": member["name"], "capacity": "member"},
+                {"name": pipeline_user["name"], "capacity": "editor"},
+            ],
+        )
+        factories.Organization(users=[{"name": partner_editor["name"], "capacity": "editor"}])
+
+        _assert_denied("group_create", member, name="mpb-categoria")
+        _assert_denied("group_create", pipeline_user, name="mpb-categoria")
+        _assert_denied("group_create", partner_editor, name="mpb-categoria")
+
+    def test_group_creator_adds_dataset_and_pipeline_update_keeps_it(self):
+        editor = factories.User()
+        pipeline_user = factories.User(name=constants.DEFAULT_PIPELINE_USER_NAME)
+        organization = factories.Organization(
+            name=constants.DEFAULT_ORGANIZATION_NAME,
+            users=[
+                {"name": editor["name"], "capacity": "editor"},
+                {"name": pipeline_user["name"], "capacity": "editor"},
+            ],
+        )
+        dataset = factories.Dataset(owner_org=organization["id"])
+        group = helpers.call_action("group_create", {"user": editor["name"]}, name="mpb-categoria")
+        helpers.call_action(
+            "member_create",
+            {"user": editor["name"]},
+            id=group["id"],
+            object=dataset["id"],
+            object_type="package",
+            capacity="public",
+        )
+
+        updated = helpers.call_action(
+            "package_update",
+            {"user": pipeline_user["name"]},
+            id=dataset["id"],
+            name=dataset["name"],
+            owner_org=organization["id"],
+            title="Título atualizado pela carga",
+        )
+
+        assert updated["title"] == "Título atualizado pela carga"
+        assert [group["name"] for group in updated["groups"]] == ["mpb-categoria"]
 
     def test_admins_cannot_delete_organizations_or_groups(self):
         admin = factories.User()
