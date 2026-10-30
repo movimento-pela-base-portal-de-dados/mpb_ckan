@@ -1,0 +1,58 @@
+[
+  {
+    "id": "cc-by-4.0",
+    "title": "Creative Commons Atribuição 4.0 Internacional (CC BY 4.0)",
+    "url": "https://creativecommons.org/licenses/by/4.0/deed.pt-br",
+    "od_conformance": "approved",
+    "osd_conformance": "not reviewed",
+    "status": "active"
+  },
+  {
+    "id": "cc-by-sa-4.0",
+    "title": "Creative Commons Atribuição-CompartilhaIgual 4.0 Internacional (CC BY-SA 4.0)",
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/deed.pt-br",
+    "od_conformance": "approved",
+    "osd_conformance": "not reviewed",
+    "status": "active"
+  },
+  {
+    "id": "cc-by-nd-4.0",
+    "title": "Creative Commons Atribuição-SemDerivações 4.0 Internacional (CC BY-ND 4.0)",
+    "url": "https://creativecommons.org/licenses/by-nd/4.0/deed.pt-br",
+    "od_conformance": "not reviewed",
+    "osd_conformance": "not reviewed",
+    "status": "active"
+  },
+  {
+    "id": "cc-by-nc-4.0",
+    "title": "Creative Commons Atribuição-NãoComercial 4.0 Internacional (CC BY-NC 4.0)",
+    "url": "https://creativecommons.org/licenses/by-nc/4.0/deed.pt-br",
+    "od_conformance": "not reviewed",
+    "osd_conformance": "not reviewed",
+    "status": "active"
+  },
+  {
+    "id": "cc-by-nc-sa-4.0",
+    "title": "Creative Commons Atribuição-NãoComercial-CompartilhaIgual 4.0 Internacional (CC BY-NC-SA 4.0)",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.pt-br",
+    "od_conformance": "not reviewed",
+    "osd_conformance": "not reviewed",
+    "status": "active"
+  },
+  {
+    "id": "cc-by-nc-nd-4.0",
+    "title": "Creative Commons Atribuição-NãoComercial-SemDerivações 4.0 Internacional (CC BY-NC-ND 4.0)",
+    "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/deed.pt-br",
+    "od_conformance": "not reviewed",
+    "osd_conformance": "not reviewed",
+    "status": "active"
+  },
+  {
+    "id": "todos-os-direitos-reservados",
+    "title": "Todos os direitos reservados",
+    "url": "",
+    "od_conformance": "not reviewed",
+    "osd_conformance": "not reviewed",
+    "status": "active"
+  }
+]

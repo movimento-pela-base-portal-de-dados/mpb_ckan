@@ -3,6 +3,7 @@ from collections import OrderedDict
 
 from flask import has_request_context
 
+import ckan.model as model
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 
@@ -55,6 +56,14 @@ def label_facet_items(search_results):
     return search_results
 
 
+def license_id(key, data, errors, context):
+    if data.get(key) in (toolkit.missing, None, ""):
+        package = context.get("package")
+        data[key] = (package and package.license_id) or c.DEFAULT_LICENSE_ID
+    if model.Package.get_license_register().get(data[key]) is None:
+        raise toolkit.Invalid("Licença inválida.")
+
+
 def requested_package_type(data_dict):
     if data_dict and data_dict.get("type"):
         return data_dict["type"]
@@ -82,6 +91,7 @@ class MpbPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IClick)
     plugins.implements(plugins.IFacets, inherit=True)
     plugins.implements(plugins.IAuthFunctions)
+    plugins.implements(plugins.IValidators)
     plugins.implements(plugins.IPackageController, inherit=True)
 
     # IConfigurer
@@ -123,6 +133,11 @@ class MpbPlugin(plugins.SingletonPlugin):
 
     def get_auth_functions(self):
         return {"package_create": package_create}
+
+    # IValidators
+
+    def get_validators(self):
+        return {"mpb_license_id": license_id}
 
     # IPackageController
 

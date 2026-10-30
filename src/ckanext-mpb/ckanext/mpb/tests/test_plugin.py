@@ -125,6 +125,7 @@ def test_portal_defaults_keep_configured_values():
         "ckan.site_logo": "/logo-mpb.svg",
         "ckan.site_description": "Descrição de homologação",
         "ckan.site_about": "Sobre o portal de homologação",
+        "licenses_group_url": "file:///etc/ckan/licenses.json",
     }
     config = dict(configured)
 

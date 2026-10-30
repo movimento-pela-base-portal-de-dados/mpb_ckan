@@ -29,6 +29,13 @@ dataset_fields:
     label: Organização
     preset: dataset_organization
 
+  - field_name: license_id
+    label: Licença
+    form_snippet: license.html
+    default: cc-by-4.0
+    sorted_choices: false
+    validators: mpb_license_id
+
   - field_name: tema
     label: Tema
     preset: select

@@ -12,3 +12,5 @@ As pipelines publicam e atualizam metadados e referências por API CKAN. A lógi
 As pipelines autenticam com token de API do usuário de serviço `mpb-pipelines`, editor da organização `movimento-pela-base`. Usuário e organização são criados na subida do CKAN por `ckan mpb setup-portal`. O token é gerado por um sysadmin com `ckan user token add mpb-pipelines <nome>` e entregue às pipelines pelo armazenamento de segredos da infraestrutura; nunca é versionado.
 
 O schema do tipo `pesquisa` (`src/ckanext-mpb/ckanext/mpb/schemas/pesquisa.yaml`) implementa o mapeamento `src/mpb_data_pipelines/schemas/pesquisa.yaml` do mpb-data-pipelines. Os `field_name` e as `choices` dos dois arquivos devem ser iguais; uma mudança de campo exige mudança nos dois repositórios.
+
+A exceção é `license_id`, que existe só no CKAN: a pesquisa criada sem licença recebe `cc-by-4.0` (CC BY 4.0), e uma atualização sem o campo mantém a licença atual. As pipelines não enviam o campo; a licença é editada pela equipe no portal.
