@@ -17,6 +17,7 @@ dataset_fields:
 
   - field_name: notes
     label: Resumo
+    mpb_private: true
     preset: markdown
 
   - field_name: tag_string
@@ -90,6 +91,7 @@ dataset_fields:
 
   - field_name: observatorio
     label: Observatório
+    mpb_private: true
     preset: radio
     choices:
       - value: sim
@@ -101,26 +103,32 @@ dataset_fields:
 
   - field_name: publico
     label: Público
+    mpb_private: true
     preset: multiple_text
 
   - field_name: topico
     label: Tópico
+    mpb_private: true
     preset: multiple_text
 
   - field_name: objetivo
     label: Objetivo
+    mpb_private: true
     preset: markdown
 
   - field_name: apoio
     label: Apoio
+    mpb_private: true
     preset: multiple_text
 
   - field_name: realizacao
     label: Realização
+    mpb_private: true
     preset: multiple_text
 
   - field_name: recorte
     label: Recorte
+    mpb_private: true
     preset: multiple_select
     choices:
       - value: brasil
@@ -132,9 +140,12 @@ dataset_fields:
 
   - field_name: titulo_alternativo
     label: Título alternativo
+    mpb_private: true
 
   - field_name: termos_busca
     label: Termos de busca
+    mpb_private: true
+    mpb_search_only: true
     preset: multiple_text
 
 resource_fields:
@@ -154,9 +165,14 @@ resource_fields:
     label: Tipo de documento
     preset: select
     choices:
+      - value: documento
+        label: Documento
       - value: relatorio
         label: Relatório
+        mpb_private: true
       - value: sumario_executivo
         label: Sumário executivo
+        mpb_private: true
       - value: ficha_site
         label: Ficha do site
+        mpb_private: true

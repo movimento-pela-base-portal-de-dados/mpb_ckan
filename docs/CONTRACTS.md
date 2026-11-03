@@ -3,6 +3,8 @@
 ## mpb-infra -> mpb-ckan
 A infraestrutura fornece host EC2, EBS persistente, acesso a S3, IAM Role, parâmetros/segredos, observabilidade e endpoint de rede necessários à execução da aplicação.
 
+Os arquivos das pesquisas ficam no volume `ckan_storage`, no EBS, e são servidos só pelo CKAN, que aplica a permissão de cada arquivo. A infraestrutura copia esse volume para `s3://<mpb-data>/backups/ckan/`; o bucket não tem link público.
+
 ## mpb-ckan -> mpb-infra
 A aplicação fornece Docker Compose, imagens/versionamento, portas internas, healthchecks, requisitos de persistência e variáveis de ambiente necessárias ao deploy.
 
@@ -16,3 +18,7 @@ As categorias (grupos) são criadas e mantidas no portal pelos editores da organ
 O schema do tipo `pesquisa` (`src/ckanext-mpb/ckanext/mpb/schemas/pesquisa.yaml`) implementa o mapeamento `src/mpb_data_pipelines/schemas/pesquisa.yaml` do mpb-data-pipelines. Os `field_name` e as `choices` dos dois arquivos devem ser iguais; uma mudança de campo exige mudança nos dois repositórios.
 
 A exceção é `license_id`, que existe só no CKAN: a pesquisa criada sem licença recebe `cc-by-4.0` (CC BY 4.0), e uma atualização sem o campo mantém a licença atual. As pipelines não enviam o campo; a licença é editada pela equipe no portal.
+
+Os campos com `mpb_private: true` no schema seguem o `access_roles` sem `publico` do mapeamento: só membros da organização dona da pesquisa e sysadmins os veem. Dos arquivos, só o tipo `documento` é público; `relatorio`, `sumario_executivo` e `ficha_site` são privados, e um arquivo sem `tipo_documento` também é tratado como privado.
+
+Arquivos que precisam ser baixados pelo portal são enviados pela API do CKAN (upload no recurso), e não como link para o S3. A equipe também envia arquivos pelo portal; por isso, depois da primeira carga, as pipelines atualizam a pesquisa com `package_patch` sem `resources`. Um `package_update` com a lista de arquivos das pipelines apaga os arquivos enviados pela equipe.
