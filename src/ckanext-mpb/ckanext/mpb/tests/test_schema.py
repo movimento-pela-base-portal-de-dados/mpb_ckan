@@ -54,7 +54,7 @@ PIPELINE_DATASET_CHOICES = {
     "observatorio": ["sim", "nao", "site_mpb"],
     "recorte": ["brasil", "estadual", "municipal"],
 }
-PIPELINE_TIPO_DOCUMENTO_CHOICES = ["relatorio", "sumario_executivo", "ficha_site"]
+PIPELINE_TIPO_DOCUMENTO_CHOICES = ["documento", "relatorio", "sumario_executivo", "ficha_site"]
 CKAN_ONLY_DATASET_FIELDS = {"license_id"}
 LICENSE_TITLE = "Creative Commons Atribuição 4.0 Internacional (CC BY 4.0)"
 

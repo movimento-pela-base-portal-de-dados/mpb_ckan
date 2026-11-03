@@ -8,7 +8,7 @@ import ckan.model as model
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 
-from ckanext.mpb import cli
+from ckanext.mpb import cli, privacy
 from ckanext.mpb import constants as c
 
 
@@ -108,6 +108,7 @@ class MpbPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IClick)
     plugins.implements(plugins.IFacets, inherit=True)
     plugins.implements(plugins.IAuthFunctions)
+    plugins.implements(plugins.IActions)
     plugins.implements(plugins.IValidators)
     plugins.implements(plugins.IPackageController, inherit=True)
 
@@ -149,7 +150,22 @@ class MpbPlugin(plugins.SingletonPlugin):
     # IAuthFunctions
 
     def get_auth_functions(self):
-        return {"package_create": package_create, "group_create": group_create}
+        return {
+            "package_create": package_create,
+            "group_create": group_create,
+            "resource_show": privacy.resource_show,
+        }
+
+    # IActions
+
+    def get_actions(self):
+        actions = {
+            "resource_search": privacy.resource_search,
+            "dataset_followee_list": privacy.dataset_followee_list,
+        }
+        if plugins.plugin_loaded("activity"):
+            actions.update(dict.fromkeys(c.ACTIVITY_ACTIONS, privacy.filter_activity_action))
+        return actions
 
     # IValidators
 
@@ -159,7 +175,13 @@ class MpbPlugin(plugins.SingletonPlugin):
     # IPackageController
 
     def before_dataset_index(self, pkg_dict):
-        return index_multivalued_fields(pkg_dict)
+        return privacy.index_public_fields(index_multivalued_fields(pkg_dict))
+
+    def after_dataset_show(self, context, pkg_dict):
+        return privacy.filter_shown_dataset(context, pkg_dict)
+
+    def before_dataset_search(self, search_params):
+        return privacy.restrict_search_params(search_params)
 
     def after_dataset_search(self, search_results, search_params):
-        return label_facet_items(search_results)
+        return label_facet_items(privacy.filter_search_results(search_results))

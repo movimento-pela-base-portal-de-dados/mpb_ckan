@@ -49,3 +49,15 @@ MULTIVALUED_FACETS = {"vocab_etapa": "etapa"}
 CHOICE_FACETS = {"tema": "tema", "vocab_etapa": "etapa", "tipo_estudo": "tipo_estudo"}
 
 CATALOG_PATH = Path(__file__).parent / "catalog.yaml"
+SCHEMA_PATH = Path(__file__).parent / "schemas" / "pesquisa.yaml"
+
+SOLR_DATASET_DICTS = {"data_dict", "validated_data_dict"}
+ACTIVITY_ACTIONS = (
+    "activity_show",
+    "package_activity_list",
+    "recently_changed_packages_activity_list",
+    "dashboard_activity_list",
+    "user_activity_list",
+    "group_activity_list",
+    "organization_activity_list",
+)
