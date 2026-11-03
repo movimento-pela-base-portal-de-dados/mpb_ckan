@@ -247,6 +247,40 @@ def test_dataset_page_hides_private_values(app, portal):
     assert "zirconio" in _get(app, portal, "member", path)
 
 
+PRIVATE_LABELS = [
+    f"<th scope=\"row\" class=\"dataset-label\">{field['label']}</th>"
+    for field in privacy._schema()["dataset_fields"]
+    if field.get("mpb_private")
+]
+
+
+@pytest.mark.parametrize("persona", NON_MEMBERS)
+def test_dataset_page_hides_private_labels(app, portal, persona):
+    body = _get(app, portal, persona, f"/pesquisa/{portal['dataset']['name']}")
+
+    assert "Palavras-chave" in body
+    assert "tag-list" not in body
+    for label in PRIVATE_LABELS:
+        assert label not in body
+
+
+@pytest.mark.parametrize("path", ["/pesquisa/", "/organization/"])
+def test_dataset_list_has_no_empty_description_for_anonymous(app, portal, path):
+    if path == "/organization/":
+        path += portal["dataset"]["organization"]["name"]
+
+    assert 'class="empty"' not in _get(app, portal, "anonymous", path)
+
+
+def test_dataset_page_shows_private_labels_to_members(app, portal):
+    body = _get(app, portal, "member", f"/pesquisa/{portal['dataset']['name']}")
+
+    assert "Objetivo" in body
+    assert '<th scope="row" class="dataset-label">Resumo</th>' in body
+    assert "tag-list" not in body
+    assert "Termos de busca" not in body
+
+
 def test_editor_update_keeps_private_fields(app, portal):
     app.post(
         "/api/3/action/package_patch",

@@ -39,11 +39,11 @@ DATASET_TYPE = "pesquisa"
 PESQUISA_FACETS = {
     "organization": "Organizações",
     "groups": "Categorias",
-    "tema": "Tema",
-    "vocab_etapa": "Etapa",
+    "tema": "Grupo temático",
+    "vocab_etapa": "Etapa de ensino",
+    "tags": "Palavras-chave",
     "tipo_estudo": "Tipo de estudo",
     "ano": "Ano",
-    "tags": "Palavras-chave",
 }
 MULTIVALUED_FACETS = {"vocab_etapa": "etapa"}
 CHOICE_FACETS = {"tema": "tema", "vocab_etapa": "etapa", "tipo_estudo": "tipo_estudo"}
