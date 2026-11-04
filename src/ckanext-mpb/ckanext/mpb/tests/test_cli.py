@@ -1,13 +1,11 @@
-import pytest
-
 import ckan.model as model
 import ckan.plugins.toolkit as toolkit
+import pytest
 from ckan.tests import factories, helpers
 
 from ckanext.mpb import constants
 from ckanext.mpb.cli import load_catalog, mpb
 from ckanext.mpb.plugin import MpbPlugin
-
 
 pytestmark = [
     pytest.mark.ckan_config("ckan.plugins", "mpb"),

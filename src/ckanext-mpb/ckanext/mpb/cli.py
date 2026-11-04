@@ -1,9 +1,8 @@
 import secrets
 
+import ckan.plugins.toolkit as toolkit
 import click
 import yaml
-
-import ckan.plugins.toolkit as toolkit
 
 from ckanext.mpb import constants as c
 

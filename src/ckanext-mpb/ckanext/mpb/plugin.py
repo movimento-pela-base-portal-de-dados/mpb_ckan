@@ -1,12 +1,11 @@
 import json
 from collections import OrderedDict
 
-from flask import has_request_context
-
 import ckan.authz as authz
 import ckan.model as model
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
+from flask import has_request_context
 
 from ckanext.mpb import cli, privacy
 from ckanext.mpb import constants as c

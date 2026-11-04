@@ -1,9 +1,7 @@
 from pathlib import Path
 
-import pytest
-
 import ckan.plugins.toolkit as toolkit
-
+import pytest
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[5]
 ENV_EXAMPLE = REPOSITORY_ROOT / ".env.example"

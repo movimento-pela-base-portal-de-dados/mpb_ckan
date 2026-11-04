@@ -29,12 +29,16 @@ class ContractError(AssertionError):
 
 def compose_base() -> list[str]:
     docker = shutil.which("docker")
-    if docker and subprocess.run(
-        [docker, "compose", "version"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        check=False,
-    ).returncode == 0:
+    if (
+        docker
+        and subprocess.run(
+            [docker, "compose", "version"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        ).returncode
+        == 0
+    ):
         return [docker, "compose"]
     standalone = shutil.which("docker-compose")
     if standalone and subprocess.run(
@@ -98,7 +102,11 @@ def duration_seconds(value: object) -> float:
 def volume_mount(service: dict, source: str, target: str) -> None:
     mounts = service.get("volumes") or []
     for mount in mounts:
-        if mount.get("type") == "volume" and mount.get("source") == source and mount.get("target") == target:
+        if (
+            mount.get("type") == "volume"
+            and mount.get("source") == source
+            and mount.get("target") == target
+        ):
             return
     raise ContractError(f"Volume {source} -> {target} ausente. Montagens: {mounts}")
 
@@ -121,7 +129,8 @@ def require_healthcheck(service_name: str, service: dict) -> None:
     if service_name in HTTP_HEALTHCHECKS:
         if "127.0.0.1" not in command or "localhost" in command:
             raise ContractError(
-                f"{service_name} deve sondar 127.0.0.1, sem localhost, para evitar falha de IPv6: {test}"
+                f"{service_name} deve sondar 127.0.0.1, sem localhost, "
+                f"para evitar falha de IPv6: {test}"
             )
     if service_name == "db" and "-h" not in test:
         raise ContractError(
@@ -196,7 +205,8 @@ def assert_stack(filename: str, app_service: str) -> None:
         callback = "http://ckan:5000"
     else:
         extensions = [
-            mount for mount in app.get("volumes") or []
+            mount
+            for mount in app.get("volumes") or []
             if mount.get("type") == "bind" and mount.get("target") == "/srv/app/src_extensions"
         ]
         if not extensions:

@@ -2,15 +2,13 @@ import json
 import re
 from functools import cache
 
-import yaml
-from flask import has_request_context
-
 import ckan.authz as authz
 import ckan.model as model
 import ckan.plugins.toolkit as toolkit
+import yaml
+from flask import has_request_context
 
 from ckanext.mpb import constants as c
-
 
 SOLR_FIELD_NAME = re.compile(r"^[A-Za-z0-9_]+$")
 
@@ -31,9 +29,7 @@ def private_fields():
 @cache
 def search_only_fields():
     return frozenset(
-        field["field_name"]
-        for field in _schema()["dataset_fields"]
-        if field.get("mpb_search_only")
+        field["field_name"] for field in _schema()["dataset_fields"] if field.get("mpb_search_only")
     )
 
 
@@ -56,9 +52,7 @@ def can_read_private(user, owner_org):
         return False
     if authz.is_sysadmin(user):
         return True
-    return bool(owner_org) and authz.has_user_permission_for_group_or_org(
-        owner_org, user, "read"
-    )
+    return bool(owner_org) and authz.has_user_permission_for_group_or_org(owner_org, user, "read")
 
 
 def request_user():
@@ -125,9 +119,7 @@ def index_public_fields(pkg_dict):
     if pkg_dict.get("dataset_type") != c.DATASET_TYPE:
         return pkg_dict
     validated = json.loads(pkg_dict["validated_data_dict"])
-    search_terms = [
-        term for field in search_only_fields() for term in validated.get(field) or []
-    ]
+    search_terms = [term for field in search_only_fields() for term in validated.get(field) or []]
     for field in private_fields():
         pkg_dict.pop(field, None)
         pkg_dict.pop(f"extras_{field}", None)
@@ -167,7 +159,9 @@ def resource_show(next_auth, context, data_dict=None):
 def resource_search(original_action, context, data_dict):
     result = original_action(context, data_dict)
     visible = [
-        resource for resource in result["results"] if resource_visible(context.get("user"), resource)
+        resource
+        for resource in result["results"]
+        if resource_visible(context.get("user"), resource)
     ]
     result["count"] -= len(result["results"]) - len(visible)
     result["results"] = visible

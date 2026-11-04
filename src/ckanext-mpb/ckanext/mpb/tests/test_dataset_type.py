@@ -1,11 +1,9 @@
-import pytest
-
 import ckan.plugins.toolkit as toolkit
+import pytest
 from ckan.tests import factories
 from ckan.tests.helpers import call_action
 
 from ckanext.mpb.tests.test_schema import SCHEMA_OPTION, _pesquisa
-
 
 pytestmark = [
     pytest.mark.ckan_config("ckan.plugins", "mpb scheming_datasets"),
@@ -22,9 +20,7 @@ def _context(user):
 @pytest.mark.parametrize("user_factory", [factories.Sysadmin, factories.User])
 def test_dataset_type_cannot_be_created(user_factory):
     user = user_factory()
-    organization = factories.Organization(
-        users=[{"name": user["name"], "capacity": "editor"}]
-    )
+    organization = factories.Organization(users=[{"name": user["name"], "capacity": "editor"}])
 
     with pytest.raises(toolkit.NotAuthorized):
         call_action(

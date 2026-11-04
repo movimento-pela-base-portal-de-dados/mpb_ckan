@@ -5,7 +5,7 @@ Aplicar uma ruleset de branch direcionada a `main` com:
 - Pull Request obrigatório, com pelo menos uma aprovação;
 - conversas resolvidas antes do merge;
 - aprovação anterior descartada quando novos commits alterarem o PR;
-- checks obrigatórios `Repository and Compose validation`,
+- checks obrigatórios `Lint`, `Repository and Compose validation`,
   `Extension and API tests` e `Production image build`;
 - branch atualizada com `main` antes do merge (`strict status checks`);
 - bloqueio de force push e de deleção da branch;

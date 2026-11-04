@@ -90,7 +90,7 @@ a.tag:hover {
 .masthead {
   background-color: white;
   background:white;
-  border-bottom: 0.5px solid lightgray; 
+  border-bottom: 0.5px solid lightgray;
 }
 
 .main:after,
@@ -195,7 +195,7 @@ a.tag:hover {
   border: 2px solid #f0f0f0; /* Borda mais visível */
   background: #ffffff;
 }
-   
+
 .box {
   box-shadow: none;
 }
@@ -357,7 +357,7 @@ body {
     flex: 0 0 calc(50% - 5px) !important; /* Keep 2 per row on tablets */
     margin-bottom: 8px !important; /* Reduzido para tablets */
   }
-  
+
   .simple-group-logo,
   .simple-org-logo,
   .simple-org-placeholder {
@@ -372,7 +372,7 @@ body {
     flex: 0 0 100% !important; /* Single column on mobile */
     margin-bottom: 6px !important; /* Ainda menor em mobile */
   }
-  
+
   .simple-group-logo,
   .simple-org-logo,
   .simple-org-placeholder {

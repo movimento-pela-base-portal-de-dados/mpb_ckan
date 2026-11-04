@@ -1,12 +1,10 @@
 import pytest
-
 from ckan.tests import factories
 from ckan.tests.helpers import call_action
 
 from ckanext.mpb import constants
 from ckanext.mpb.plugin import index_multivalued_fields
 from ckanext.mpb.tests.test_schema import SCHEMA_OPTION, _pesquisa
-
 
 pytestmark = [
     pytest.mark.ckan_config("ckan.plugins", "mpb scheming_datasets"),
@@ -61,9 +59,7 @@ def _facet_items(result, facet):
 def test_search_facets_count_and_label_pesquisa_fields():
     _create_pesquisas()
 
-    result = call_action(
-        "package_search", **{"facet.field": list(constants.PESQUISA_FACETS)}
-    )
+    result = call_action("package_search", **{"facet.field": list(constants.PESQUISA_FACETS)})
 
     assert _facet_items(result, "vocab_etapa") == {
         "ensino_medio": (2, "Ensino Médio"),
