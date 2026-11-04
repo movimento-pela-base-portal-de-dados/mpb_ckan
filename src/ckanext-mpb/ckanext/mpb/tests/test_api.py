@@ -2,9 +2,7 @@ import json
 import re
 
 import pytest
-
 from ckan.tests import factories
-
 
 pytestmark = [
     pytest.mark.ckan_config("ckan.plugins", "mpb datastore"),

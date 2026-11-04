@@ -1,6 +1,5 @@
 from pathlib import Path
 
-
 LICENSES_PATH = Path(__file__).parent / "licenses.json"
 DEFAULT_LICENSE_ID = "cc-by-4.0"
 

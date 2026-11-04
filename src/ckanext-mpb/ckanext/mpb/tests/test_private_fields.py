@@ -1,13 +1,11 @@
 import json
 
 import pytest
-
 from ckan.tests import factories
 from ckan.tests.helpers import call_action
 
 from ckanext.mpb import privacy
 from ckanext.mpb.tests.test_schema import SCHEMA_OPTION, _pesquisa
-
 
 pytestmark = [
     pytest.mark.ckan_config("ckan.plugins", "mpb scheming_datasets activity"),
@@ -159,7 +157,12 @@ def test_package_show_shows_private_fields_to_organization_users(app, portal, pe
 
 def test_package_show_with_default_schema_hides_private_extras(app, portal):
     body = _api(
-        app, portal, "anonymous", "package_show", id=portal["dataset"]["name"], use_default_schema="true"
+        app,
+        portal,
+        "anonymous",
+        "package_show",
+        id=portal["dataset"]["name"],
+        use_default_schema="true",
     )
 
     _assert_hidden(body)
@@ -248,7 +251,7 @@ def test_dataset_page_hides_private_values(app, portal):
 
 
 PRIVATE_LABELS = [
-    f"<th scope=\"row\" class=\"dataset-label\">{field['label']}</th>"
+    f'<th scope="row" class="dataset-label">{field["label"]}</th>'
     for field in privacy._schema()["dataset_fields"]
     if field.get("mpb_private")
 ]
@@ -309,12 +312,10 @@ def test_activity_does_not_expose_private_fields(app, portal):
 
     for persona in NON_MEMBERS:
         _assert_hidden(_api(app, portal, persona, "package_activity_list", id=dataset_id))
-        _assert_hidden(
-            _api(app, portal, persona, "recently_changed_packages_activity_list")
-        )
-    activity_id = json.loads(
-        _api(app, portal, "sysadmin", "package_activity_list", id=dataset_id)
-    )["result"][0]["id"]
+        _assert_hidden(_api(app, portal, persona, "recently_changed_packages_activity_list"))
+    activity_id = json.loads(_api(app, portal, "sysadmin", "package_activity_list", id=dataset_id))[
+        "result"
+    ][0]["id"]
     _api(app, portal, "anonymous", "activity_data_show", status=403, id=activity_id)
     _api(app, portal, "member", "activity_data_show", status=403, id=activity_id)
 

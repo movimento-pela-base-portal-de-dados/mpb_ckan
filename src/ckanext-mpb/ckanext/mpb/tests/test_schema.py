@@ -1,13 +1,11 @@
 from pathlib import Path
 
+import ckan.model as model
 import pytest
 import yaml
-
-import ckan.model as model
 from ckan.logic import ValidationError
 from ckan.tests import factories
 from ckan.tests.helpers import call_action
-
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[5]
 SCHEMA_OPTION = "ckanext.mpb:schemas/pesquisa.yaml"

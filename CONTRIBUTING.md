@@ -13,6 +13,8 @@ necessário e remova-a após o merge. Não há branches permanentes `develop` ou
 ## Antes de abrir o PR
 
 ```bash
+pre-commit install   # uma vez por clone; roda Ruff, ShellCheck e checagens básicas no commit
+pre-commit run --all-files
 cp .env.example .env
 docker compose --env-file .env.example -f docker-compose.yml config --quiet
 docker compose --env-file .env.example -f docker-compose.dev.yml config --quiet
