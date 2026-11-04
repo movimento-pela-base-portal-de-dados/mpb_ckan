@@ -1,13 +1,19 @@
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
 volumes:
   ckan_storage:
   pg_data:
   solr_data:
-  pip_cache:
 
 services:
 
   nginx:
-    image: ${REGISTRY}/nginx:${IMAGE_TAG:-latest}
+    logging: *logging
+    image: ${REGISTRY}/nginx:${IMAGE_TAG:?defina IMAGE_TAG}
     build:
       context: nginx/
       dockerfile: Dockerfile
@@ -20,11 +26,14 @@ services:
     ports:
       - "0.0.0.0:${NGINX_PORT_HOST}:${NGINX_PORT}"
       - "0.0.0.0:${NGINX_SSLPORT_HOST}:${NGINX_SSLPORT}"
+    environment:
+      - CKAN_DOMAIN
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
 
   ckan:
-    image: ${REGISTRY}/ckan:${IMAGE_TAG:-latest}
+    logging: *logging
+    image: ${REGISTRY}/ckan:${IMAGE_TAG:?defina IMAGE_TAG}
     build:
       context: .
       dockerfile: ckan/Dockerfile
@@ -49,7 +58,6 @@ services:
         restart: true
     volumes:
       - ckan_storage:/var/lib/ckan
-      - pip_cache:/root/.cache/pip
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "http://127.0.0.1:5000/api/action/status_show"]
@@ -57,8 +65,9 @@ services:
       timeout: 10s
       retries: 20
       start_period: 300s
-    
+
   datapusher:
+    logging: *logging
     networks:
       - ckannet
       - dbnet
@@ -72,7 +81,8 @@ services:
       start_period: 40s
 
   db:
-    image: ${REGISTRY}/db:${IMAGE_TAG:-latest}
+    logging: *logging
+    image: ${REGISTRY}/db:${IMAGE_TAG:?defina IMAGE_TAG}
     build:
       context: postgresql/
     networks:
@@ -96,8 +106,9 @@ services:
       timeout: 5s
       retries: 20
       start_period: 20s
-     
+
   solr:
+    logging: *logging
     networks:
       - solrnet
     image: ckan/ckan-solr:${SOLR_IMAGE_VERSION}
@@ -112,6 +123,7 @@ services:
       start_period: 40s
 
   redis:
+    logging: *logging
     image: redis:${REDIS_VERSION}
     networks:
       - redisnet
@@ -122,7 +134,7 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
-    
+
 networks:
   webnet:
   ckannet:
