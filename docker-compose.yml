@@ -65,7 +65,7 @@ services:
       timeout: 10s
       retries: 20
       start_period: 300s
-    
+
   datapusher:
     logging: *logging
     networks:
@@ -106,7 +106,7 @@ services:
       timeout: 5s
       retries: 20
       start_period: 20s
-     
+
   solr:
     logging: *logging
     networks:
@@ -134,7 +134,7 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
-    
+
 networks:
   webnet:
   ckannet:
