@@ -125,9 +125,6 @@ O CI executa validação de Compose e scripts, testes da extensão, build sem pu
 das imagens de produção e smoke test quando aplicável. Nenhum workflow atual
 publica imagens ou faz deploy.
 
-O script `bin/daily-restart` foi recebido no baseline e permanece apenas como
-artefato legado testado. Reinício diário não é requisito da arquitetura V1.
-
 ## Pendências para o CD
 
 Antes de criar qualquer workflow de implantação, definir e revisar:
