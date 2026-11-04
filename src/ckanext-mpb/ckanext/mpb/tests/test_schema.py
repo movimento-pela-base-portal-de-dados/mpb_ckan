@@ -22,6 +22,7 @@ PIPELINE_DATASET_FIELDS = {
     "tag_string",
     "owner_org",
     "tema",
+    "alavanca",
     "etapa",
     "tipo_estudo",
     "ano",

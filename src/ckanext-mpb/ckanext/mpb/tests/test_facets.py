@@ -120,5 +120,5 @@ def test_categories_facet_appears_when_groups_exist(app):
 
     assert "Categorias" in search_body
     assert "Currículo" in search_body
-    assert "Etapa" in group_body
+    assert "Etapa de ensino" in group_body
     assert "license_id" not in group_body

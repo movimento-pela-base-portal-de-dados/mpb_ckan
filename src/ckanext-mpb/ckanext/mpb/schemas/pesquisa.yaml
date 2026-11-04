@@ -15,30 +15,8 @@ dataset_fields:
     preset: dataset_slug
     form_placeholder: "ex.: minha-pesquisa"
 
-  - field_name: notes
-    label: Resumo
-    mpb_private: true
-    preset: markdown
-
-  - field_name: tag_string
-    label: Palavras-chave
-    preset: tag_string_autocomplete
-    form_placeholder: "ex.: currículo, BNCC, ensino médio"
-    required: true
-
-  - field_name: owner_org
-    label: Organização
-    preset: dataset_organization
-
-  - field_name: license_id
-    label: Licença
-    form_snippet: license.html
-    default: cc-by-4.0
-    sorted_choices: false
-    validators: mpb_license_id
-
   - field_name: tema
-    label: Tema
+    label: Grupo temático
     preset: select
     choices:
       - value: conteudo_curricular
@@ -48,8 +26,11 @@ dataset_fields:
       - value: revisao_politica_curricular
         label: Revisão de política curricular
 
+  - field_name: alavanca
+    label: Alavanca
+
   - field_name: etapa
-    label: Etapa
+    label: Etapa de ensino
     preset: multiple_select
     choices:
       - value: educacao_infantil
@@ -58,6 +39,12 @@ dataset_fields:
         label: Ensino Fundamental
       - value: ensino_medio
         label: Ensino Médio
+
+  - field_name: tag_string
+    label: Palavras-chave
+    preset: tag_string_autocomplete
+    form_placeholder: "ex.: currículo, BNCC, ensino médio"
+    required: true
 
   - field_name: tipo_estudo
     label: Tipo de estudo
@@ -138,6 +125,11 @@ dataset_fields:
       - value: municipal
         label: Municipal
 
+  - field_name: notes
+    label: Resumo
+    mpb_private: true
+    preset: markdown
+
   - field_name: titulo_alternativo
     label: Título alternativo
     mpb_private: true
@@ -147,6 +139,17 @@ dataset_fields:
     mpb_private: true
     mpb_search_only: true
     preset: multiple_text
+
+  - field_name: owner_org
+    label: Organização
+    preset: dataset_organization
+
+  - field_name: license_id
+    label: Licença
+    form_snippet: license.html
+    default: cc-by-4.0
+    sorted_choices: false
+    validators: mpb_license_id
 
 resource_fields:
   - field_name: url
