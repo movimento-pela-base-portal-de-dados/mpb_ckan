@@ -1,12 +1,35 @@
 # Contratos entre repositórios
 
 ## mpb-infra -> mpb-ckan
-A infraestrutura fornece host EC2, EBS persistente, acesso a S3, IAM Role, parâmetros/segredos, observabilidade e endpoint de rede necessários à execução da aplicação.
+A infraestrutura fornece, em `sa-east-1`:
 
-Os arquivos das pesquisas ficam no volume `ckan_storage`, no EBS, e são servidos só pelo CKAN, que aplica a permissão de cada arquivo. A infraestrutura copia esse volume para `s3://<mpb-data>/backups/ckan/`; o bucket não tem link público.
+- **EC2** Amazon Linux 2023 com Docker, plugin Compose, `git`, `jq`, AWS CLI, `certbot` e agente SSM. Clone do repositório em `/opt/mpb_ckan`.
+- **Disco**: EBS gp3 criptografado, com `delete_on_termination=false`. Os volumes Docker `pg_data`, `solr_data` e `ckan_storage` ficam nele.
+- **Rede**: Elastic IP; Security Group com entrada só em `443` e `80` (desafio do Let's Encrypt e redirecionamento para HTTPS), sem SSH; PostgreSQL, Solr e Redis sem exposição.
+- **Acesso**: administração e deploy por Session Manager. A instância tem a tag `Project=mpb`, exigida pela política do grupo de engenharia para `ssm:StartSession`.
+- **Instance role** com:
+  - `ssm:GetParametersByPath` em `/mpb/ckan/*`;
+  - `s3:ListBucket`, `s3:GetObject` e `s3:PutObject` em `s3://<mpb-data>/backups/postgresql/*` e `backups/ckan/*`;
+  - `logs:CreateLogStream` e `logs:PutLogEvents` nos log groups `/mpb/ckan/*`;
+  - `cloudwatch:PutMetricData` no namespace `MPB`;
+  - `AmazonSSMManagedInstanceCore`.
+- **Parâmetros**: um parâmetro por chave do `.env` de produção, em `/mpb/ckan/<CHAVE>`, com `SecureString` para senhas, URLs de banco com senha, segredos de sessão e JWT, senha do sysadmin e `CKAN__DATAPUSHER__API_TOKEN`. Os valores secretos são gravados pela operação, fora do state do Terraform.
+- **Logs**: log groups `/mpb/ckan/nginx` e `/mpb/ckan/ckan`, com retenção de 14 dias.
+- **Backup**: lifecycle que expira `backups/postgresql/` e `backups/ckan/` após 30 dias. Alarme quando a métrica `MPB/BackupSuccess` não chega em 26 horas.
+- **Monitoramento**: alarmes de status da instância, CPU, memória e disco acima de 80%.
+- **DNS**: registro A do domínio do portal apontando para o Elastic IP.
 
 ## mpb-ckan -> mpb-infra
-A aplicação fornece Docker Compose, imagens/versionamento, portas internas, healthchecks, requisitos de persistência e variáveis de ambiente necessárias ao deploy.
+A aplicação fornece:
+
+- **Stack**: `docker-compose.yml` com Nginx, CKAN, PostgreSQL, Solr, Redis e DataPusher, todos com healthcheck. Só o Nginx publica portas (`80` e `443`).
+- **Imagens**: construídas na EC2 a partir de uma tag do git, com `IMAGE_TAG` igual à tag. O registro (ECR) entra quando a infraestrutura fornecer repositório e OIDC.
+- **Deploy**: script executado na EC2 que gera o `.env` a partir de `/mpb/ckan/`, faz dump do PostgreSQL, sobe a nova versão, verifica `/api/action/status_show` e a página inicial pelo Nginx e volta à versão anterior em caso de falha.
+- **Certificado**: emissão e renovação pelo `certbot` do host, com desafio HTTP pela porta 80. Os certificados ficam em `/etc/letsencrypt`, lidos pelo Nginx.
+- **Backup**: rotina diária na EC2 que envia `pg_dump` a `backups/postgresql/` e o volume `ckan_storage` a `backups/ckan/`, e publica `MPB/BackupSuccess` a cada execução bem-sucedida. Script de restauração, com reconstrução do índice de busca (`ckan search-index rebuild -c`).
+- **Logs**: Nginx e CKAN enviam logs aos log groups `/mpb/ckan/nginx` e `/mpb/ckan/ckan` pelo driver `awslogs`.
+
+Os arquivos das pesquisas ficam no volume `ckan_storage` e são servidos só pelo CKAN, que aplica a permissão de cada arquivo. O bucket não tem link público.
 
 ## mpb-data-pipelines -> mpb-ckan
 As pipelines publicam e atualizam metadados e referências por API CKAN. A lógica de aquisição e transformação não deve ser incorporada ao ciclo de vida da aplicação CKAN.
