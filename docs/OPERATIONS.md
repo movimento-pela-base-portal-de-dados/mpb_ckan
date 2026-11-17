@@ -44,6 +44,7 @@ Atalhos disponíveis:
 | `bin/install_src` | Instala extensões locais |
 | `bin/reload` | Recarrega o processo Python |
 | `bin/restart` | Reinicia somente o CKAN de desenvolvimento |
+| `bin/test [args do pytest]` | Roda os testes da extensão em stack descartável, como no CI |
 
 ### Extensão `ckanext-mpb`
 
