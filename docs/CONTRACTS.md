@@ -3,17 +3,17 @@
 ## mpb-infra -> mpb-ckan
 A infraestrutura fornece, em `sa-east-1`:
 
-- **EC2** Amazon Linux 2023 com Docker, plugin Compose, `git`, `jq`, AWS CLI, `certbot` e agente SSM. Clone do repositório em `/opt/mpb_ckan`.
+- **EC2** Amazon Linux 2023 com Docker, plugin Compose, `git`, `jq`, AWS CLI, `certbot` (com timer de renovação e reload do Nginx) e agente SSM. Clone do repositório em `/opt/mpb_ckan`.
 - **Disco**: EBS gp3 criptografado, com `delete_on_termination=false`. Os volumes Docker `pg_data`, `solr_data` e `ckan_storage` ficam nele.
 - **Rede**: Elastic IP; Security Group com entrada só em `443` e `80` (desafio do Let's Encrypt e redirecionamento para HTTPS), sem SSH; PostgreSQL, Solr e Redis sem exposição.
 - **Acesso**: administração e deploy por Session Manager. A instância tem a tag `Project=mpb`, exigida pela política do grupo de engenharia para `ssm:StartSession`.
 - **Instance role** com:
-  - `ssm:GetParametersByPath` em `/mpb/ckan/*`;
+  - `ssm:GetParameters` em `/mpb/ckan/*`;
   - `s3:ListBucket`, `s3:GetObject` e `s3:PutObject` em `s3://<mpb-data>/backups/postgresql/*` e `backups/ckan/*`;
   - `logs:CreateLogStream` e `logs:PutLogEvents` nos log groups `/mpb/ckan/*`;
   - `cloudwatch:PutMetricData` no namespace `MPB`;
   - `AmazonSSMManagedInstanceCore`.
-- **Parâmetros**: um parâmetro por chave do `.env` de produção, em `/mpb/ckan/<CHAVE>`, com `SecureString` para senhas, URLs de banco com senha, segredos de sessão e JWT, senha do sysadmin e `CKAN__DATAPUSHER__API_TOKEN`. Os valores secretos são gravados pela operação, fora do state do Terraform.
+- **Parâmetros** em `/mpb/ckan/<CHAVE>`, só para as chaves cujo valor de produção difere do `.env.example`: `CKAN_DOMAIN`, `CKAN_SITE_URL`, portas do Nginx, e-mails e `MPB_DATA_BUCKET` (nome do bucket), como `String`; senhas, URLs de banco com senha, segredos de sessão e JWT, senha do sysadmin e `CKAN__DATAPUSHER__API_TOKEN`, como `SecureString`. Os valores secretos são gravados pela operação, fora do state do Terraform.
 - **Logs**: log groups `/mpb/ckan/nginx` e `/mpb/ckan/ckan`, com retenção de 14 dias.
 - **Backup**: lifecycle que expira `backups/postgresql/` e `backups/ckan/` após 30 dias. Alarme quando a métrica `MPB/BackupSuccess` não chega em 26 horas.
 - **Monitoramento**: alarmes de status da instância, CPU, memória e disco acima de 80%.
@@ -24,8 +24,9 @@ A aplicação fornece:
 
 - **Stack**: `docker-compose.yml` com Nginx, CKAN, PostgreSQL, Solr, Redis e DataPusher, todos com healthcheck. Só o Nginx publica portas (`80` e `443`).
 - **Imagens**: construídas na EC2 a partir de uma tag do git, com `IMAGE_TAG` igual à tag. O registro (ECR) entra quando a infraestrutura fornecer repositório e OIDC.
-- **Deploy**: script executado na EC2 que gera o `.env` a partir de `/mpb/ckan/`, faz dump do PostgreSQL, sobe a nova versão, verifica `/api/action/status_show` e a página inicial pelo Nginx e volta à versão anterior em caso de falha.
-- **Certificado**: emissão e renovação pelo `certbot` do host, com desafio HTTP pela porta 80. Os certificados ficam em `/etc/letsencrypt`, lidos pelo Nginx.
+- **Deploy**: script executado na EC2 que gera o `.env` a partir do `.env.example`, trocando cada chave que exista em `/mpb/ckan/` (leitura pelo nome), e recusa subir se restar algum `CHANGE_ME`. Depois faz dump do PostgreSQL, sobe a nova versão, verifica `/api/action/status_show` e a página inicial pelo Nginx e volta à versão anterior em caso de falha.
+- **Certificado**: emissão e renovação pelo `certbot` do host, com desafio HTTP pela porta 80 (`--webroot -w /var/www/certbot`). O Nginx monta `/var/www/certbot` para servir o desafio e lê os certificados em `/etc/letsencrypt`.
+- **E-mail**: sem SMTP. Contas são criadas por um sysadmin com senha provisória, e a redefinição de senha também é feita por um sysadmin.
 - **Backup**: rotina diária na EC2 que envia `pg_dump` a `backups/postgresql/` e o volume `ckan_storage` a `backups/ckan/`, e publica `MPB/BackupSuccess` a cada execução bem-sucedida. Script de restauração, com reconstrução do índice de busca (`ckan search-index rebuild -c`).
 - **Logs**: Nginx e CKAN enviam logs aos log groups `/mpb/ckan/nginx` e `/mpb/ckan/ckan` pelo driver `awslogs`.
 
