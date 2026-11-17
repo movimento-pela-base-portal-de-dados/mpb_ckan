@@ -28,7 +28,7 @@ A aplicação fornece:
 - **Certificado**: emissão e renovação pelo `certbot` do host, com desafio HTTP pela porta 80 (`--webroot -w /var/www/certbot`). O Nginx monta `/var/www/certbot` para servir o desafio e lê os certificados em `/etc/letsencrypt`.
 - **E-mail**: sem SMTP. Contas são criadas por um sysadmin com senha provisória, e a redefinição de senha também é feita por um sysadmin.
 - **Backup**: rotina diária na EC2 que envia `pg_dump` a `backups/postgresql/` e o volume `ckan_storage` a `backups/ckan/`, e publica `MPB/BackupSuccess` a cada execução bem-sucedida. Script de restauração, com reconstrução do índice de busca (`ckan search-index rebuild -c`).
-- **Logs**: Nginx e CKAN enviam logs aos log groups `/mpb/ckan/nginx` e `/mpb/ckan/ckan` pelo driver `awslogs`.
+- **Logs**: Nginx e CKAN enviam logs aos log groups `/mpb/ckan/nginx` e `/mpb/ckan/ckan` pelo driver `awslogs`, definido em `docker-compose.aws.yml`; na EC2 a stack sobe com `-f docker-compose.yml -f docker-compose.aws.yml`.
 
 Os arquivos das pesquisas ficam no volume `ckan_storage` e são servidos só pelo CKAN, que aplica a permissão de cada arquivo. O bucket não tem link público.
 
