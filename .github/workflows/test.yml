@@ -33,6 +33,7 @@ jobs:
           cp .env.example .env
           docker compose --env-file .env.example -f docker-compose.yml config --quiet
           docker compose --env-file .env.example -f docker-compose.dev.yml config --quiet
+          docker compose --env-file .env.example -f docker-compose.yml -f docker-compose.aws.yml config --quiet
       - name: Run operational checks
         run: tests/test_operations.sh
       - name: Validate Compose contract
