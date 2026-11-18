@@ -51,12 +51,12 @@ def compose_base() -> list[str]:
     raise ContractError("Docker Compose V2 não encontrado (docker compose ou docker-compose).")
 
 
-def render(filename: str) -> dict:
+def render(*filenames: str) -> dict:
+    files = [arg for name in filenames for arg in ("-f", str(ROOT / name))]
     command = compose_base() + [
         "--env-file",
         str(ENV_FILE),
-        "-f",
-        str(ROOT / filename),
+        *files,
         "config",
         "--format",
         "json",
@@ -64,7 +64,7 @@ def render(filename: str) -> dict:
     result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
     if result.returncode != 0:
         hint = "\nExecute: cp .env.example .env" if not (ROOT / ".env").exists() else ""
-        raise ContractError(f"Falha ao renderizar {filename}:\n{result.stderr}{hint}")
+        raise ContractError(f"Falha ao renderizar {filenames}:\n{result.stderr}{hint}")
     return json.loads(result.stdout)
 
 
@@ -202,6 +202,9 @@ def assert_stack(filename: str, app_service: str) -> None:
 
     if filename == "docker-compose.yml":
         require_healthy_dependency(services["nginx"], "ckan")
+        nginx_mounts = {m.get("target") for m in services["nginx"].get("volumes") or []}
+        if not {"/etc/letsencrypt", "/var/www/certbot"} <= nginx_mounts:
+            raise ContractError("nginx deve montar /etc/letsencrypt e /var/www/certbot do host.")
         callback = "http://ckan:5000"
     else:
         extensions = [
@@ -219,6 +222,18 @@ def assert_stack(filename: str, app_service: str) -> None:
         raise ContractError(
             f"{app_service} deve chamar o DataPusher de volta em {callback}, obtido {actual!r}."
         )
+
+
+def assert_aws_logging() -> None:
+    services = render("docker-compose.yml", "docker-compose.aws.yml")["services"]
+    for name in ("nginx", "ckan"):
+        logging = services[name].get("logging") or {}
+        options = logging.get("options") or {}
+        group = f"/mpb/ckan/{name}"
+        if logging.get("driver") != "awslogs" or options.get("awslogs-group") != group:
+            raise ContractError(f"{name} deve enviar logs a {group} pelo awslogs: {logging}")
+        if "max-size" in options or "max-file" in options:
+            raise ContractError(f"{name} herdou opções do json-file no awslogs: {options}")
 
 
 def env_example() -> dict[str, str]:
@@ -251,10 +266,13 @@ def main() -> int:
         assert_ckan_versions()
         assert_stack("docker-compose.yml", "ckan")
         assert_stack("docker-compose.dev.yml", "ckan-dev")
+        assert_aws_logging()
     except ContractError as exc:
         print(f"Contrato do Compose reprovado: {exc}", file=sys.stderr)
         return 1
-    print("Contrato do Compose validado: versões do CKAN, dependências, healthchecks e volumes.")
+    print(
+        "Contrato do Compose validado: versões do CKAN, dependências, healthchecks, volumes e logs."
+    )
     return 0
 
 

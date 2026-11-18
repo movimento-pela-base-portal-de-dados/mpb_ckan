@@ -1,0 +1,19 @@
+services:
+
+  nginx:
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ${AWS_REGION:-sa-east-1}
+        awslogs-group: /mpb/ckan/nginx
+        mode: non-blocking
+        max-buffer-size: 4m
+
+  ckan:
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ${AWS_REGION:-sa-east-1}
+        awslogs-group: /mpb/ckan/ckan
+        mode: non-blocking
+        max-buffer-size: 4m

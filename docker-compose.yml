@@ -30,6 +30,7 @@ services:
       - CKAN_DOMAIN
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/certbot:/var/www/certbot:ro
 
   ckan:
     logging: *logging
