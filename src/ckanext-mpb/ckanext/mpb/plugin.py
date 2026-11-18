@@ -7,7 +7,7 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from flask import has_request_context
 
-from ckanext.mpb import cli, privacy
+from ckanext.mpb import cli, first_login, privacy
 from ckanext.mpb import constants as c
 
 
@@ -110,6 +110,8 @@ class MpbPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IValidators)
     plugins.implements(plugins.IPackageController, inherit=True)
+    plugins.implements(plugins.ISignal)
+    plugins.implements(plugins.IMiddleware, inherit=True)
 
     # IConfigurer
 
@@ -184,3 +186,14 @@ class MpbPlugin(plugins.SingletonPlugin):
 
     def after_dataset_search(self, search_results, search_params):
         return label_facet_items(privacy.filter_search_results(search_results))
+
+    # ISignal
+
+    def get_signal_subscriptions(self):
+        return {toolkit.signals.user_logged_in: [first_login.mark_first_login]}
+
+    # IMiddleware
+
+    def make_middleware(self, app, config):
+        app.before_request(first_login.redirect_first_login)
+        return app
