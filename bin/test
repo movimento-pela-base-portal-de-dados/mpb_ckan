@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [[ "${1:-}" == "--in-container" ]]; then
+  shift
+  pip install -q -r ../../ckan/requirements.txt -r requirements.txt -r dev-requirements.txt
+  pip install -q -e .
+  sed -e 's#use = config:.*#use = config:/srv/app/src/ckan/test-core.ini#' test.ini > /tmp/test.ini
+  python - <<'PY'
+import time, urllib.request
+for _ in range(60):
+    try:
+        urllib.request.urlopen("http://solr:8983/solr/ckan/admin/ping", timeout=2)
+        break
+    except Exception:
+        time.sleep(2)
+else:
+    raise SystemExit("Solr não respondeu.")
+PY
+  ckan -c /tmp/test.ini db init
+  exec pytest --ckan-ini=/tmp/test.ini -p no:cacheprovider "${@:-ckanext/mpb}"
+fi
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+COMPOSE=(docker compose -f "${ROOT}/docker-compose.test.yml")
+trap '"${COMPOSE[@]}" rm -fsv >/dev/null 2>&1; "${COMPOSE[@]}" down -t 0 >/dev/null 2>&1' EXIT
+"${COMPOSE[@]}" run --rm tests "$@"
