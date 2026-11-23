@@ -66,7 +66,7 @@ def test_search_facets_count_and_label_pesquisa_fields():
         "ensino_fundamental": (1, "Ensino Fundamental"),
         "educacao_infantil": (1, "Educação Infantil"),
     }
-    assert _facet_items(result, "tema") == {"implementacao": (2, "Implementação")}
+    assert _facet_items(result, "tema") == {"implementacao_bncc": (2, "Implementação da BNCC")}
     assert _facet_items(result, "tipo_estudo") == {
         "estudo_de_caso": (1, "Estudo de caso"),
         "guia": (1, "Guia"),

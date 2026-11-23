@@ -18,7 +18,6 @@ PRIVATE_URL = "https://example.org/relatorio-secreto.pdf"
 PUBLIC_URL = "https://example.org/documento-publico.pdf"
 SEARCH_TERM = "termoexclusivodebusca"
 SECRETS = [
-    "zirconio",
     "objetivo-secreto",
     "publico-secreto",
     "topico-secreto",
@@ -55,7 +54,6 @@ def portal():
         context={"user": sysadmin["name"]},
         **_pesquisa(
             organization["id"],
-            notes="Resumo com a palavra zirconio.",
             objetivo="objetivo-secreto",
             publico=["publico-secreto"],
             topico=["topico-secreto"],
@@ -118,7 +116,6 @@ ORGANIZATION_USERS = ["member", "editor", "sysadmin"]
 
 def test_schema_marks_private_fields_and_resource_types():
     assert privacy.private_fields() == {
-        "notes",
         "observatorio",
         "publico",
         "topico",
@@ -140,7 +137,7 @@ def test_package_show_hides_private_fields_from_non_members(app, portal, persona
 
     _assert_hidden(body)
     assert result["title"] == "Pesquisa de teste"
-    assert result["tema"] == "implementacao"
+    assert result["tema"] == "implementacao_bncc"
     assert [resource["url"] for resource in result["resources"]] == [PUBLIC_URL]
     assert result["num_resources"] == 1
 
@@ -185,7 +182,7 @@ def test_search_results_show_private_fields_to_members(app, portal):
 
 @pytest.mark.parametrize("persona", ["anonymous", "member"])
 def test_private_text_is_not_searchable(app, portal, persona):
-    for query in ["zirconio", "objetivo-secreto", 'res_url:"' + PRIVATE_URL + '"']:
+    for query in ["objetivo-secreto", 'res_url:"' + PRIVATE_URL + '"']:
         body = _api(app, portal, persona, "package_search", q=query)
         assert json.loads(body)["result"]["count"] == 0
 
@@ -247,7 +244,7 @@ def test_dataset_page_hides_private_values(app, portal):
     path = f"/pesquisa/{portal['dataset']['name']}"
 
     _assert_hidden(_get(app, portal, "anonymous", path))
-    assert "zirconio" in _get(app, portal, "member", path)
+    assert "objetivo-secreto" in _get(app, portal, "member", path)
 
 
 PRIVATE_LABELS = [
