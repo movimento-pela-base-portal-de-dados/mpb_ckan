@@ -36,7 +36,14 @@ PIPELINE_DATASET_FIELDS = {
 }
 PIPELINE_RESOURCE_FIELDS = {"url", "name", "format", "tipo_documento"}
 PIPELINE_DATASET_CHOICES = {
-    "tema": ["conteudo_curricular", "implementacao", "revisao_politica_curricular"],
+    "tema": [
+        "conteudos_competencias",
+        "implementacao_bncc",
+        "revisao_politica_curricular",
+        "politicas_educacionais",
+        "ensino_aprendizagem",
+    ],
+    "alavanca": ["todas", "avaliacao", "curriculo", "formacao_docente"],
     "etapa": ["educacao_infantil", "ensino_fundamental", "ensino_medio"],
     "tipo_estudo": [
         "analise",
@@ -153,7 +160,7 @@ def _pesquisa(owner_org, **overrides):
         "notes": "Resumo sintético usado pela suíte de testes.",
         "tag_string": "currículo,ensino médio",
         "owner_org": owner_org,
-        "tema": "implementacao",
+        "tema": "implementacao_bncc",
         "etapa": ["ensino_fundamental", "ensino_medio"],
         "tipo_estudo": "estudo_de_caso",
         "ano": "2024",

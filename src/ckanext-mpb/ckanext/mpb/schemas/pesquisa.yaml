@@ -19,15 +19,29 @@ dataset_fields:
     label: Grupo temático
     preset: select
     choices:
-      - value: conteudo_curricular
-        label: Conteúdo curricular
-      - value: implementacao
-        label: Implementação
+      - value: conteudos_competencias
+        label: Conteúdos e competências
+      - value: implementacao_bncc
+        label: Implementação da BNCC
       - value: revisao_politica_curricular
         label: Revisão de política curricular
+      - value: politicas_educacionais
+        label: Políticas Educacionais
+      - value: ensino_aprendizagem
+        label: Ensino e Aprendizagem
 
   - field_name: alavanca
     label: Alavanca
+    preset: select
+    choices:
+      - value: todas
+        label: Todas
+      - value: avaliacao
+        label: Avaliação
+      - value: curriculo
+        label: Currículo
+      - value: formacao_docente
+        label: Formação Docente
 
   - field_name: etapa
     label: Etapa de ensino
@@ -127,7 +141,6 @@ dataset_fields:
 
   - field_name: notes
     label: Resumo
-    mpb_private: true
     preset: markdown
 
   - field_name: titulo_alternativo
