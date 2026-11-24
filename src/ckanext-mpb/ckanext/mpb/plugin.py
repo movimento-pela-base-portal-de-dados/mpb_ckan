@@ -8,7 +8,7 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from flask import has_request_context
 
-from ckanext.mpb import cli, first_login, privacy, routes
+from ckanext.mpb import cli, first_login, privacy, routes, theme
 from ckanext.mpb import constants as c
 
 
@@ -169,6 +169,7 @@ class MpbPlugin(plugins.SingletonPlugin):
         toolkit.add_template_directory(config_, "templates")
         toolkit.add_public_directory(config_, "public")
         toolkit.add_resource("assets", "mpb")
+        theme.register_core_theme()
         apply_portal_defaults(config_)
 
     # IConfigDeclaration

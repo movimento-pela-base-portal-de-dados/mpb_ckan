@@ -23,6 +23,11 @@
   border-radius: 100px;
 }
 
+.module-narrow .nav-item > a,
+.module-narrow .nav-aside li a {
+  transition: color var(--mpb-transition), background-color var(--mpb-transition), text-decoration-color var(--mpb-transition);
+}
+
 .module-narrow .nav-item > a:hover,
 .module-narrow .nav-aside li a:hover {
   text-decoration: underline;

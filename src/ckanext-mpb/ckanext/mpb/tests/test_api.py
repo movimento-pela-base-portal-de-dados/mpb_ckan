@@ -52,6 +52,8 @@ def test_homepage_uses_portal_defaults(app):
     assert "Bem-vindo(a) ao Portal de Dados Movimento pela Base" in body
     assert "ckan-logo.png" not in body
     assert 'href="/organization/"' not in body
+    assert 'href="/#grupos"' in body
+    assert 'id="grupos"' in body
 
 
 def test_catalog_can_create_search_and_show_dataset(app):

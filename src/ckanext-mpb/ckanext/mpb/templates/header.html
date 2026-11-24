@@ -8,6 +8,19 @@
   <a class="logo" href="{{ h.url_for('home.index') }}">
     <img src="{{ h.url_for_static_or_external(g.site_logo or '/logo-mpb.png') }}" alt="{{ g.site_title }}" title="{{ g.site_title }}" width="65" height="65" fetchpriority="high" />
   </a>
+  {% set dataset_type = h.default_package_type() %}
+  <button class="header-search-toggle" type="button" aria-expanded="false" aria-controls="header-search" aria-label="{{ _('Search') }}">
+    <i class="fa fa-search" aria-hidden="true"></i>
+  </button>
+  <div class="header-search" id="header-search">
+    <form class="header-search-form" action="{% url_for dataset_type ~ '.search' %}" method="get" role="search">
+      <div class="header-search-field">
+        <i class="fa fa-search" aria-hidden="true"></i>
+        <input id="field-sitewide-search" class="form-control" type="search" name="q" placeholder="Digite o que você está procurando" aria-label="Pesquisar" />
+      </div>
+      <button class="btn-search-header" type="submit">Buscar</button>
+    </form>
+  </div>
 {% endblock %}
 
 {% block header_site_navigation_tabs %}
@@ -15,8 +28,9 @@
   {% set group_type = h.default_group_type('group') %}
 
   {{ h.build_nav_main(
-    (dataset_type ~ '.search', h.humanize_entity_type('package', dataset_type, 'main nav') or _('Datasets'), ["dataset", "resource"]),
-    (group_type ~ '.index',
-      h.humanize_entity_type('group', group_type, 'main nav') or _('Groups'), ['group'])) }}
+    (dataset_type ~ '.search', h.humanize_entity_type('package', dataset_type, 'main nav') or _('Datasets'), ["dataset", "resource"])) }}
+  <li><a href="{{ h.url_for('home.index') }}#grupos">{{ h.humanize_entity_type('group', group_type, 'main nav') or _('Groups') }}</a></li>
   <li><a href="{{ h.url_for('home.index') }}#sobre">{{ _('About') }}</a></li>
 {% endblock %}
+
+{% block header_site_search %}{% endblock %}

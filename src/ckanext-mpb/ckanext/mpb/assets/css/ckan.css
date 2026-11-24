@@ -11,6 +11,7 @@ a,
 .page-header .nav-tabs li a,
 .page-link {
   color: var(--mpb-dark);
+  transition: color var(--mpb-transition), text-decoration-color var(--mpb-transition), background-color var(--mpb-transition);
 }
 
 a:hover,
@@ -89,4 +90,35 @@ a:hover,
   color: var(--mpb-dark);
   background-color: var(--mpb-yellow);
   border-color: var(--mpb-yellow);
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus,
+.accordion-button:focus {
+  border-color: var(--mpb-dark);
+  box-shadow: 0 0 0 0.4rem var(--mpb-focus-ring);
+}
+
+.btn:focus,
+.btn-check:focus + .btn,
+.btn-outline-primary:focus,
+.page-link:focus,
+.btn-close:focus {
+  box-shadow: 0 0 0 0.4rem var(--mpb-focus-ring);
+}
+
+.form-range:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 1px var(--mpb-white), 0 0 0 0.4rem var(--mpb-focus-ring);
+}
+
+.form-range:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 1px var(--mpb-white), 0 0 0 0.4rem var(--mpb-focus-ring);
+}
+
+.btn,
+.form-control,
+.form-select,
+.form-check-input {
+  transition: color var(--mpb-transition), background-color var(--mpb-transition), border-color var(--mpb-transition), box-shadow var(--mpb-transition);
 }
