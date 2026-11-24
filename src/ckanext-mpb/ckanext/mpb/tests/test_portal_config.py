@@ -167,10 +167,20 @@ def test_footer_has_no_language_selector(app):
     assert 'id="field-lang-select"' not in response.body
 
 
-def test_about_page_shows_portal_default(app):
-    response = app.get(toolkit.url_for("home.about"))
+def test_home_shows_about_section_with_portal_default(app):
+    body = app.get("/").body
 
-    assert constants.PORTAL_DEFAULTS["ckan.site_about"] in response.body
+    assert f'id="{constants.ABOUT_ANCHOR}"' in body
+    assert constants.PORTAL_DEFAULTS["ckan.site_about"] in body
+    assert 'href="/#sobre"' in body
+    assert 'href="/about"' not in body
+
+
+def test_about_page_redirects_to_home_section(app):
+    response = app.get("/about", follow_redirects=False)
+
+    assert response.status_code == 302
+    assert response.location.endswith("/#sobre")
 
 
 @pytest.mark.usefixtures("clean_db")
@@ -182,7 +192,7 @@ def test_sysadmin_text_replaces_portal_default(app):
         **{"ckan.site_about": "Texto definido pela administração"},
     )
 
-    response = app.get(toolkit.url_for("home.about"))
+    response = app.get("/")
 
     assert "Texto definido pela administração" in response.body
     assert constants.PORTAL_DEFAULTS["ckan.site_about"] not in response.body

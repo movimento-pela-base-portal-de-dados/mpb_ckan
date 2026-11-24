@@ -1,0 +1,158 @@
+.account-masthead {
+  background-color: var(--mpb-dark);
+  color: var(--mpb-white);
+}
+
+.account-masthead .account .notifications a span {
+  background-color: var(--mpb-yellow);
+  color: var(--mpb-dark);
+}
+
+.account-masthead .account ul li a {
+  display: block;
+  text-decoration: none;
+  color: var(--mpb-white);
+  font-size: 0.8125rem;
+  font-weight: bold;
+  padding: 0 10px;
+  line-height: 1.9375rem;
+}
+
+.account-masthead .account ul li {
+  border-left: 1px solid var(--mpb-white) !important;
+}
+
+.account-masthead .account ul li a:hover {
+  color: var(--mpb-yellow);
+  background-color: var(--mpb-dark);
+}
+
+.account-masthead .btn-link {
+  font-weight: 400;
+  color: var(--mpb-white);
+  text-decoration: none;
+}
+
+.account-masthead .btn-link:hover {
+  color: var(--mpb-yellow);
+  text-decoration: underline;
+}
+
+.account-masthead .account ul li a.sub {
+  font-weight: bold;
+}
+
+.masthead {
+  background-color: var(--mpb-white);
+  background:var(--mpb-white);
+  border-bottom: 0.5px solid var(--mpb-neutral-300);
+}
+
+.main:after,
+[role=main]:after {
+  bottom: 0;
+  border-top-width: 0px;
+}
+
+.media-grid, .module-grid {
+  margin: 0;
+  list-style: none;
+  padding-left: 0px;
+  min-height: 205px;
+  padding-top: 12px;
+  background: var(--mpb-white);
+  border: 1px solid var(--mpb-neutral-300);
+  border-width: 1px 0;
+}
+
+.masthead input[type="text"]:focus {
+  -webkit-box-shadow: inset 0px 0px 2px 0px var(--mpb-shadow);
+  box-shadow: inset 0px 0px 2px 0px var(--mpb-shadow);
+}
+
+.masthead .main-navbar .navbar-nav {
+  gap: 12px;
+}
+
+.masthead .main-navbar ul li a {
+  display: block;
+  margin: 0;
+  padding: 0;
+  font-family: var(--mpb-font-support);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  color: var(--mpb-neutral-900);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transition: color 0.4s ease-in-out;
+}
+
+.masthead .main-navbar ul li a:hover {
+  color: var(--mpb-dark) !important;
+  border-bottom-color: var(--mpb-yellow);
+  background-color: transparent !important;
+}
+
+.masthead .main-navbar ul li.active a {
+  border-bottom-color: var(--mpb-yellow);
+  border-radius: 0;
+  background-color: transparent;
+  color: var(--mpb-neutral-900);
+}
+
+.search-form .search-input button i {
+  color: var(--mpb-dark);
+  transition: color 0.2s ease-in;
+}
+
+.masthead {
+  padding: 0 !important;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: transform 0.25s ease-in-out;
+}
+
+.masthead.masthead-hidden {
+  transform: translateY(-100%);
+}
+
+.masthead .navbar {
+  align-items: center;
+  min-height: 89px;
+  padding: 0;
+}
+
+.masthead hgroup {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.masthead .navbar .logo img {
+  display: block;
+  width: 65px;
+  height: 65px;
+  max-height: none;
+  color: transparent;
+}
+
+.masthead .navbar-toggler .fa-bars {
+  color: var(--mpb-neutral-900) !important;
+}
+
+@media (min-width: 992px) {
+  .masthead .main-navbar {
+    align-items: center;
+  }
+
+  .masthead .main-navbar .navbar-nav {
+    gap: 32px;
+  }
+
+  .masthead .site-search {
+    align-items: center;
+    margin-left: 16px;
+  }
+}

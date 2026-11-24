@@ -2,10 +2,11 @@ from pathlib import Path
 
 LICENSES_PATH = Path(__file__).parent / "licenses.json"
 DEFAULT_LICENSE_ID = "cc-by-4.0"
+DEFAULT_SITE_LOGO = "/logo-mpb.png"
 
 PORTAL_DEFAULTS = {
     "ckan.site_title": "Portal de Dados Movimento pela Base",
-    "ckan.site_logo": "",
+    "ckan.site_logo": DEFAULT_SITE_LOGO,
     "ckan.site_description": "Dados abertos publicados pelo Movimento pela Base.",
     "ckan.site_about": (
         "O Portal de Dados Movimento pela Base reúne conjuntos de dados "
@@ -34,6 +35,8 @@ DEFAULT_PIPELINE_USER_NAME = "mpb-pipelines"
 PIPELINE_USER_CAPACITY = "editor"
 
 DATASET_TYPE = "pesquisa"
+SEARCH_PATH = "/pesquisas/"
+ABOUT_ANCHOR = "sobre"
 
 PESQUISA_FACETS = {
     "organization": "Organizações",

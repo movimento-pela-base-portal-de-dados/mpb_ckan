@@ -1,0 +1,10 @@
+<section id="sobre" class="home-section home-about">
+  <div class="container">
+    <h2 class="home-section-title">{{ _('About') }}</h2>
+    {% if g.site_about %}
+      {{ h.render_markdown(g.site_about) }}
+    {% else %}
+      {% snippet 'home/snippets/about_text.html' %}
+    {% endif %}
+  </div>
+</section>

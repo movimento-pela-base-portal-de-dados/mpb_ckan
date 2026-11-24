@@ -1,0 +1,48 @@
+.module-narrow .nav-item.active > a:before,
+.module-narrow .nav-aside li.active a:before {
+  content: " ";
+  position: absolute;
+  border: 20px solid transparent;
+  border-right: none;
+  border-left-color: var(--mpb-yellow);
+  border-left-width: 6px;
+  top: 0;
+  bottom: 0;
+  right: -6px;
+  width: 6px;
+  height: 34px;
+}
+
+.pill {
+  display: inline-block;
+  background-color: var(--mpb-yellow);
+  color: var(--mpb-dark);
+  padding: 2px 10px 1px;
+  margin-right: 5px;
+  font-weight: normal;
+  border-radius: 100px;
+}
+
+.module-narrow .nav-item > a:hover,
+.module-narrow .nav-aside li a:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--mpb-yellow);
+  background-color: transparent;
+}
+
+.module-narrow .nav-item.active > a,
+.module-narrow .nav-aside li.active a {
+  position: relative;
+  color: var(--mpb-dark);
+  background-color: var(--mpb-yellow);
+}
+.module-narrow .nav-item.active > a:hover,
+.module-narrow .nav-aside li.active a:hover {
+  color: var(--mpb-dark);
+  background-color: var(--mpb-yellow);
+}
+.module-narrow .nav-item > a .badge,
+.module-narrow .nav-aside li a .badge {
+  background-color: var(--mpb-dark);
+  border-radius: 10px;
+}

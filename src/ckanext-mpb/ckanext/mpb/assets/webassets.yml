@@ -2,4 +2,16 @@ mpb-css:
   filter: cssrewrite
   output: ckanext-mpb/%(version)s-mpb.css
   contents:
-    - custom.css
+    - css/colors.css
+    - css/typography.css
+    - css/ckan.css
+    - css/layout.css
+    - css/masthead.css
+    - css/home.css
+    - css/footer.css
+    - css/dataset.css
+
+mpb-js:
+  output: ckanext-mpb/%(version)s-mpb.js
+  contents:
+    - js/header.js

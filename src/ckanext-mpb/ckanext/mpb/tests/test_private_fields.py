@@ -264,7 +264,7 @@ def test_dataset_page_hides_private_labels(app, portal, persona):
         assert label not in body
 
 
-@pytest.mark.parametrize("path", ["/pesquisa/", "/organization/"])
+@pytest.mark.parametrize("path", ["/pesquisas/", "/organization/"])
 def test_dataset_list_has_no_empty_description_for_anonymous(app, portal, path):
     if path == "/organization/":
         path += portal["dataset"]["organization"]["name"]

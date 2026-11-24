@@ -1,0 +1,37 @@
+html {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+[role=main],
+.main {
+  position: relative;
+}
+
+.main {
+  flex: 1;
+  padding: 20px 0;
+  background: var(--mpb-white);
+}
+
+a.tag:hover {
+  text-decoration: none;
+  color: var(--mpb-dark);
+  background-color: var(--mpb-white);
+  border: 1px solid var(--mpb-yellow);
+  box-shadow: none;
+}
+
+.toolbar .breadcrumb a {
+  color: var(--mpb-dark);
+}
+
+body {
+  background-color: var(--mpb-white);
+  background: var(--mpb-white);
+}

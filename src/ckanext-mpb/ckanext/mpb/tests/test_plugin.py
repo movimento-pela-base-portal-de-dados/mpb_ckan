@@ -48,6 +48,9 @@ To temporary patch the CKAN configuration for the duration of a test you can use
         pass
 """
 
+import re
+from pathlib import Path
+
 import pytest
 from ckan.plugins import plugin_loaded
 
@@ -132,3 +135,15 @@ def test_portal_defaults_keep_configured_values():
     plugin.apply_portal_defaults(config)
 
     assert config == configured
+
+
+@pytest.mark.ckan_config("ckan.plugins", "mpb")
+@pytest.mark.usefixtures("with_plugins")
+def test_css_fonts_are_served_locally(app):
+    css = (Path(plugin.__file__).parent / "assets" / "css" / "typography.css").read_text()
+    fonts = re.findall(r'url\("(/fonts/[^"]+\.woff2)"\)', css)
+
+    assert {"Source Serif Pro", "Open Sans"} <= set(re.findall(r'font-family: "([^"]+)"', css))
+    assert fonts
+    for font in fonts:
+        assert app.get(font).status_code == 200

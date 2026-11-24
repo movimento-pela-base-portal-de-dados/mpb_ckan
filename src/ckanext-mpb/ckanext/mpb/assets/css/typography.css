@@ -1,0 +1,114 @@
+@font-face {
+  font-family: "Source Serif Pro";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/source-serif-pro/source-serif-pro-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Source Serif Pro";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/source-serif-pro/source-serif-pro-latin-400-italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Source Serif Pro";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/source-serif-pro/source-serif-pro-latin-600-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Source Serif Pro";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/source-serif-pro/source-serif-pro-latin-700-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Source Serif Pro";
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/source-serif-pro/source-serif-pro-latin-700-italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Source Serif Pro";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("/fonts/source-serif-pro/source-serif-pro-latin-900-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/open-sans/open-sans-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/open-sans/open-sans-latin-400-italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/open-sans/open-sans-latin-600-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/open-sans/open-sans-latin-700-normal.woff2") format("woff2");
+}
+
+:root {
+  --mpb-font-text: "Source Serif Pro", Georgia, "Times New Roman", serif;
+  --mpb-font-support: "Open Sans", Arial, sans-serif;
+  --bs-font-sans-serif: var(--mpb-font-support);
+  --bs-body-font-family: var(--mpb-font-text);
+}
+
+body,
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--mpb-font-text);
+}
+
+.account-masthead,
+.masthead .navbar-nav,
+.breadcrumb,
+.btn,
+button,
+input,
+select,
+textarea,
+label,
+.form-control,
+.form-select,
+.nav,
+.pill,
+.tag,
+.badge,
+.module-heading,
+.home-section-title,
+.simple-group-name,
+.simple-group-count,
+.site-footer {
+  font-family: var(--mpb-font-support);
+}

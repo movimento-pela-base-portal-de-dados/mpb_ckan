@@ -1,3 +1,4 @@
+import ckan.plugins.toolkit as toolkit
 import pytest
 from ckan.tests import factories
 from ckan.tests.helpers import call_action
@@ -87,7 +88,7 @@ def test_search_filters_by_etapa():
 def test_search_page_shows_pesquisa_facets(app):
     _create_pesquisas()
 
-    body = app.get("/pesquisa/").get_data(as_text=True)
+    body = app.get(constants.SEARCH_PATH).get_data(as_text=True)
 
     for title in constants.PESQUISA_FACETS.values():
         assert title in body
@@ -111,10 +112,38 @@ def test_categories_facet_appears_when_groups_exist(app):
         capacity="public",
     )
 
-    search_body = app.get("/pesquisa/").get_data(as_text=True)
+    search_body = app.get(constants.SEARCH_PATH).get_data(as_text=True)
     group_body = app.get("/group/curriculo").get_data(as_text=True)
 
     assert "Categorias" in search_body
     assert "Currículo" in search_body
     assert "Etapa de ensino" in group_body
     assert "license_id" not in group_body
+
+
+@pytest.mark.usefixtures("with_plugins")
+def test_search_is_served_under_plural_path(app):
+    assert toolkit.url_for("pesquisa.search") == constants.SEARCH_PATH
+    assert toolkit.url_for("pesquisa.read", id="x") == "/pesquisa/x"
+    assert app.get(constants.SEARCH_PATH).status_code == 200
+
+
+@pytest.mark.usefixtures("with_plugins")
+def test_old_search_path_redirects_keeping_query(app):
+    response = app.get("/pesquisa/?q=bncc&ano=2020", follow_redirects=False)
+
+    assert response.status_code == 308
+    assert response.location.endswith(f"{constants.SEARCH_PATH}?q=bncc&ano=2020")
+
+
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
+def test_home_lists_thematic_groups_in_sections(app):
+    _create_pesquisas()
+
+    body = app.get("/").get_data(as_text=True)
+
+    sections = ["home-hero", "home-search", "home-groups", "home-about"]
+    positions = [body.index(f"home-section {section}") for section in sections]
+    assert positions == sorted(positions)
+    assert f'action="{constants.SEARCH_PATH}"' in body
+    assert "Implementação da BNCC" in body

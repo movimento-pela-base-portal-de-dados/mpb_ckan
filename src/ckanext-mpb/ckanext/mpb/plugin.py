@@ -8,7 +8,7 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from flask import has_request_context
 
-from ckanext.mpb import cli, first_login, privacy
+from ckanext.mpb import cli, first_login, privacy, routes
 from ckanext.mpb import constants as c
 
 
@@ -144,6 +144,12 @@ def sync_tema_group(package):
         )
 
 
+def thematic_groups():
+    return toolkit.get_action("group_list")(
+        {"ignore_auth": True}, {"all_fields": True, "sort": "title asc"}
+    )
+
+
 class MpbPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IConfigDeclaration)
@@ -155,6 +161,7 @@ class MpbPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.ISignal)
     plugins.implements(plugins.IMiddleware, inherit=True)
+    plugins.implements(plugins.ITemplateHelpers)
 
     # IConfigurer
 
@@ -239,10 +246,19 @@ class MpbPlugin(plugins.SingletonPlugin):
     # ISignal
 
     def get_signal_subscriptions(self):
-        return {toolkit.signals.user_logged_in: [first_login.mark_first_login]}
+        return {
+            toolkit.signals.user_logged_in: [first_login.mark_first_login],
+            toolkit.signals.register_blueprint: [routes.add_search_rule],
+        }
 
     # IMiddleware
 
     def make_middleware(self, app, config):
         app.before_request(first_login.redirect_first_login)
+        app.before_request(routes.redirect_about_page)
         return app
+
+    # ITemplateHelpers
+
+    def get_helpers(self):
+        return {"mpb_thematic_groups": thematic_groups}

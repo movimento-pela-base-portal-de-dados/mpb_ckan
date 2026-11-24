@@ -1,0 +1,22 @@
+{% ckan_extends %}
+
+{% block header_account %}
+  {% if c.userobj %}{{ super() }}{% endif %}
+{% endblock %}
+
+{% block header_logo %}
+  <a class="logo" href="{{ h.url_for('home.index') }}">
+    <img src="{{ h.url_for_static_or_external(g.site_logo or '/logo-mpb.png') }}" alt="{{ g.site_title }}" title="{{ g.site_title }}" width="65" height="65" fetchpriority="high" />
+  </a>
+{% endblock %}
+
+{% block header_site_navigation_tabs %}
+  {% set dataset_type = h.default_package_type() %}
+  {% set group_type = h.default_group_type('group') %}
+
+  {{ h.build_nav_main(
+    (dataset_type ~ '.search', h.humanize_entity_type('package', dataset_type, 'main nav') or _('Datasets'), ["dataset", "resource"]),
+    (group_type ~ '.index',
+      h.humanize_entity_type('group', group_type, 'main nav') or _('Groups'), ['group'])) }}
+  <li><a href="{{ h.url_for('home.index') }}#sobre">{{ _('About') }}</a></li>
+{% endblock %}

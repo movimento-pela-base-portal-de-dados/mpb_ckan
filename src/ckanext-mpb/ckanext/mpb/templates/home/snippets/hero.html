@@ -1,0 +1,13 @@
+<section class="home-section home-hero">
+  <div class="container">
+    {% set intro = g.site_intro_text %}
+    {% if intro %}
+      {{ h.render_markdown(intro) }}
+    {% else %}
+      <h1>Bem-vindo(a) ao {{ g.site_title }}</h1>
+      {% if g.site_description %}
+        <h2>{{ g.site_description }}</h2>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>

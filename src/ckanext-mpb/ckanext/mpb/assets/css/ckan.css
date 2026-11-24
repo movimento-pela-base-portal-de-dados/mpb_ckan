@@ -1,0 +1,92 @@
+:root {
+  --bs-blue: var(--mpb-dark);
+  --bs-primary: var(--mpb-dark);
+  --bs-primary-rgb: 58, 67, 76;
+}
+
+a,
+.link-primary,
+.btn-link,
+.nav-link,
+.page-header .nav-tabs li a,
+.page-link {
+  color: var(--mpb-dark);
+}
+
+a:hover,
+.link-primary:hover,
+.btn-link:hover,
+.nav-link:hover,
+.nav-link:focus,
+.page-header .nav-tabs li a:hover,
+.page-header .nav-tabs li a:focus,
+.page-link:hover,
+.page-link:focus {
+  color: var(--mpb-dark);
+  text-decoration-color: var(--mpb-yellow);
+}
+
+.btn-primary,
+.btn-primary:disabled,
+.btn-primary.disabled {
+  color: var(--mpb-white);
+  background-color: var(--mpb-dark);
+  border-color: var(--mpb-dark);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-check:focus + .btn-primary,
+.btn-check:checked + .btn-primary,
+.btn-check:active + .btn-primary,
+.btn-primary:active,
+.btn-primary.active,
+.show > .btn-primary.dropdown-toggle {
+  color: var(--mpb-dark);
+  background-color: var(--mpb-yellow);
+  border-color: var(--mpb-yellow);
+}
+
+.btn-outline-primary,
+.btn-outline-primary:disabled,
+.btn-outline-primary.disabled {
+  color: var(--mpb-dark);
+  border-color: var(--mpb-dark);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:active,
+.btn-outline-primary.active,
+.btn-outline-primary.dropdown-toggle.show {
+  color: var(--mpb-white);
+  background-color: var(--mpb-dark);
+  border-color: var(--mpb-dark);
+}
+
+.form-check-input:checked,
+.form-check-input[type=checkbox]:indeterminate {
+  background-color: var(--mpb-dark);
+  border-color: var(--mpb-dark);
+}
+
+.form-range::-webkit-slider-thumb {
+  background-color: var(--mpb-dark);
+}
+
+.form-range::-moz-range-thumb {
+  background-color: var(--mpb-dark);
+}
+
+.dropdown-item.active,
+.dropdown-item:active,
+.dropdown-menu-dark .dropdown-item.active,
+.dropdown-menu-dark .dropdown-item:active,
+.list-group-item.active,
+.page-item.active .page-link,
+.progress-bar,
+.nav-pills .show > .nav-link,
+.page-header .nav-tabs li .nav-pills .show > a {
+  color: var(--mpb-dark);
+  background-color: var(--mpb-yellow);
+  border-color: var(--mpb-yellow);
+}
