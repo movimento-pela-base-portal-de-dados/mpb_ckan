@@ -1,5 +1,6 @@
 import json
 from collections import OrderedDict
+from functools import cache
 
 import ckan.authz as authz
 import ckan.model as model
@@ -101,6 +102,48 @@ def group_create(context, data_dict=None):
     }
 
 
+@cache
+def tema_titles():
+    field = next(
+        field for field in privacy._schema()["dataset_fields"] if field["field_name"] == "tema"
+    )
+    return {choice["value"]: choice["label"] for choice in field["choices"]}
+
+
+def tema_group(tema):
+    group = model.Group.get(tema)
+    if group is None:
+        group = model.Group(name=tema, title=tema_titles()[tema], type="group")
+        model.Session.add(group)
+    group.state = "active"
+    return group
+
+
+def sync_tema_group(package):
+    if package.type != c.DATASET_TYPE:
+        return
+    tema = package.extras.get("tema")
+    group = tema_group(tema) if tema in tema_titles() else None
+    members = model.Session.query(model.Member).filter_by(table_name="package", table_id=package.id)
+    linked = False
+    for member in members:
+        if member.group is group:
+            member.state = "active"
+            linked = True
+        elif member.group.name in tema_titles():
+            member.state = "deleted"
+    if group is not None and not linked:
+        model.Session.add(
+            model.Member(
+                group=group,
+                table_name="package",
+                table_id=package.id,
+                capacity="public",
+                state="active",
+            )
+        )
+
+
 class MpbPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IConfigDeclaration)
@@ -186,6 +229,12 @@ class MpbPlugin(plugins.SingletonPlugin):
 
     def after_dataset_search(self, search_results, search_params):
         return label_facet_items(privacy.filter_search_results(search_results))
+
+    def create(self, entity):
+        sync_tema_group(entity)
+
+    def edit(self, entity):
+        sync_tema_group(entity)
 
     # ISignal
 

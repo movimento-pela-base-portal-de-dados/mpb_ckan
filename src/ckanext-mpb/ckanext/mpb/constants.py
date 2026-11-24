@@ -38,14 +38,13 @@ DATASET_TYPE = "pesquisa"
 PESQUISA_FACETS = {
     "organization": "Organizações",
     "groups": "Categorias",
-    "tema": "Grupo temático",
     "vocab_etapa": "Etapa de ensino",
     "tags": "Palavras-chave",
     "tipo_estudo": "Tipo de estudo",
     "ano": "Ano",
 }
 MULTIVALUED_FACETS = {"vocab_etapa": "etapa"}
-CHOICE_FACETS = {"tema": "tema", "vocab_etapa": "etapa", "tipo_estudo": "tipo_estudo"}
+CHOICE_FACETS = {"vocab_etapa": "etapa", "tipo_estudo": "tipo_estudo"}
 
 CATALOG_PATH = Path(__file__).parent / "catalog.yaml"
 SCHEMA_PATH = Path(__file__).parent / "schemas" / "pesquisa.yaml"

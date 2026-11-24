@@ -66,7 +66,7 @@ def test_search_facets_count_and_label_pesquisa_fields():
         "ensino_fundamental": (1, "Ensino Fundamental"),
         "educacao_infantil": (1, "Educação Infantil"),
     }
-    assert _facet_items(result, "tema") == {"implementacao_bncc": (2, "Implementação da BNCC")}
+    assert _facet_items(result, "groups") == {"implementacao_bncc": (2, "Implementação da BNCC")}
     assert _facet_items(result, "tipo_estudo") == {
         "estudo_de_caso": (1, "Estudo de caso"),
         "guia": (1, "Guia"),
@@ -89,8 +89,8 @@ def test_search_page_shows_pesquisa_facets(app):
 
     body = app.get("/pesquisa/").get_data(as_text=True)
 
-    for facet, title in constants.PESQUISA_FACETS.items():
-        assert (title in body) == (facet != "groups")
+    for title in constants.PESQUISA_FACETS.values():
+        assert title in body
     assert "Ensino Médio" in body
     assert "Estudo de caso" in body
     assert "license_id" not in body

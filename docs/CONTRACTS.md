@@ -37,7 +37,7 @@ As pipelines publicam e atualizam metadados e referências por API CKAN. A lógi
 
 As pipelines autenticam com token de API do usuário de serviço `mpb-pipelines`, editor da organização `movimento-pela-base`. Usuário e organização são criados na subida do CKAN por `ckan mpb setup-portal`. O token é gerado por um sysadmin com `ckan user token add mpb-pipelines <nome>` e entregue às pipelines pelo armazenamento de segredos da infraestrutura; nunca é versionado.
 
-As categorias (grupos) são criadas e mantidas no portal pelos editores da organização `movimento-pela-base`. O `mpb-pipelines` não cria categorias nem pode ser membro delas: assim, o `package_update` das pipelines não remove pesquisas das categorias.
+As categorias (grupos) vêm do campo `tema`: ao salvar uma pesquisa, o CKAN a vincula ao grupo de mesmo `name` que o valor de `tema`, criando o grupo na primeira vez com o rótulo da opção como `title`, e a desvincula dos grupos dos outros temas. As pipelines enviam só `tema` e não mexem em `groups`. Grupos que não correspondem a um tema são criados e mantidos no portal pelos editores da organização `movimento-pela-base`; o `mpb-pipelines` não cria categorias nem pode ser membro delas, assim o `package_update` das pipelines não remove pesquisas dessas categorias.
 
 O schema do tipo `pesquisa` (`src/ckanext-mpb/ckanext/mpb/schemas/pesquisa.yaml`) implementa o mapeamento `src/mpb_data_pipelines/schemas/pesquisa.yaml` do mpb-data-pipelines. Os `field_name` e as `choices` dos dois arquivos devem ser iguais; uma mudança de campo exige mudança nos dois repositórios.
 
