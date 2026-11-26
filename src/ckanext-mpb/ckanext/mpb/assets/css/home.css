@@ -24,8 +24,94 @@ html {
 }
 
 .home-hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  min-height: clamp(360px, 55vh, 520px);
   padding: 84px 0 40px;
   text-align: left;
+}
+
+.home-hero-art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.home-hero-inner {
+  position: relative;
+}
+
+.hero-triangle {
+  position: absolute;
+}
+
+.hero-l-triangle-yellow-light {
+  left: 0;
+  bottom: 0;
+  width: 420px;
+  height: 420px;
+  background: var(--mpb-yellow-light);
+  clip-path: polygon(0% 0%, 0% 100%, 100% 100%);
+}
+
+.hero-l-triangle-yellow-light::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translate(-2px, 2px);
+  background-color: var(--mpb-white);
+  clip-path: polygon(0% 0%, 0% 6%, 94% 100%, 100% 100%);
+}
+
+.hero-l-triangle-yellow {
+  left: 0;
+  bottom: 0;
+  width: 420px;
+  height: 420px;
+  background: var(--mpb-yellow);
+  clip-path: polygon(0% 20%, 0% 100%, 80% 100%);
+}
+
+.hero-l-triangle-coral {
+  left: 0;
+  bottom: 0;
+  width: 420px;
+  height: 420px;
+  background: var(--mpb-coral);
+  clip-path: polygon(0% 20%, 0% 50%, 15% 35%);
+}
+
+.hero-r-triangle-yellow {
+  right: 0;
+  bottom: 0;
+  width: 420px;
+  height: 420px;
+  background: var(--mpb-yellow-light);
+  clip-path: polygon(100% 0%, 50% 50%, 100% 100%);
+}
+
+.hero-r-triangle-coral {
+  right: 0;
+  bottom: 0;
+  width: 420px;
+  height: 420px;
+  background: var(--mpb-coral);
+  clip-path: polygon(50% 90%, 50% 55%, 85% 90%);
+}
+
+.hero-r-triangle-coral::before {
+  --stroke: 4px;
+  --stroke-diagonal: calc(var(--stroke) * 2.414);
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--mpb-white);
+  clip-path: polygon(
+    calc(50% + var(--stroke)) calc(90% - var(--stroke)),
+    calc(50% + var(--stroke)) calc(55% + var(--stroke-diagonal)),
+    calc(85% - var(--stroke-diagonal)) calc(90% - var(--stroke))
+  );
 }
 
 .home-hero h1 {
@@ -117,4 +203,30 @@ html {
   font-size: 2rem;
   color: var(--mpb-dark);
   transition: color var(--mpb-transition);
+}
+
+.home-about {
+  display: flex;
+  align-items: center;
+  min-height: clamp(360px, 55vh, 520px);
+}
+
+.home-about-title {
+  margin: 0 0 30px;
+  padding-bottom: 0;
+  border-bottom: 0;
+  font-family: var(--mpb-font-text);
+  font-size: 5.6rem;
+  line-height: 6rem;
+  font-weight: 900;
+  color: var(--mpb-text);
+}
+
+.home-about-text p {
+  font-family: var(--mpb-font-support);
+  font-size: 1.6rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--mpb-body-text);
+  text-align: left;
 }

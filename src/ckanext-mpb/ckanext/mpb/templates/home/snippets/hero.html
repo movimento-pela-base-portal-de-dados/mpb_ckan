@@ -1,5 +1,13 @@
 <section class="home-section home-hero">
-  <div class="container">
+  <div class="home-hero-art" aria-hidden="true">
+    <span class="hero-triangle hero-l-triangle-yellow-light"></span>
+    <span class="hero-triangle hero-l-triangle-yellow"></span>
+    <span class="hero-triangle hero-l-triangle-coral"></span>
+
+    <span class="hero-triangle hero-r-triangle-yellow-light"></span>
+    <span class="hero-triangle hero-r-triangle-coral"></span>
+  </div>
+  <div class="container home-hero-inner">
     {% set intro = g.site_intro_text %}
     {% if intro %}
       {{ h.render_markdown(intro) }}
