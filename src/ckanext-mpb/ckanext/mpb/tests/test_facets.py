@@ -142,8 +142,9 @@ def test_home_lists_thematic_groups_in_sections(app):
 
     body = app.get("/").get_data(as_text=True)
 
-    sections = ["home-hero", "home-search", "home-groups", "home-about"]
+    sections = ["home-hero", "home-explore", "home-about"]
     positions = [body.index(f"home-section {section}") for section in sections]
     assert positions == sorted(positions)
+    assert body.index('class="home-search"') < body.index('class="home-groups"')
     assert f'action="{constants.SEARCH_PATH}"' in body
     assert "Implementação da BNCC" in body

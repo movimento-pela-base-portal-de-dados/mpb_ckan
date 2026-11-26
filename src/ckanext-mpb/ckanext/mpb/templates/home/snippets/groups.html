@@ -1,22 +1,20 @@
 {% set groups = h.mpb_thematic_groups() %}
 
-<section class="home-section home-groups" id="grupos">
-  <div class="container">
-    <h2 class="home-section-title">Grupos temáticos</h2>
-    {% if groups %}
-      <div class="groups-row">
-        {% for group in groups %}
-          <a href="{{ h.url_for('group.read', id=group.name) }}" class="simple-group-link">
-            {% if group.image_display_url %}
-              <img src="{{ group.image_display_url }}" alt="" class="simple-group-logo">
-            {% endif %}
-            <span class="simple-group-name">{{ group.display_name }}</span>
-            <small class="simple-group-count">{{ group.package_count }} {{ 'pesquisa' if group.package_count == 1 else 'pesquisas' }}</small>
-          </a>
-        {% endfor %}
-      </div>
-    {% else %}
-      <p>Nenhum grupo temático disponível.</p>
-    {% endif %}
-  </div>
-</section>
+<div class="home-groups">
+  <h3 class="home-groups-title">Explore por Grupos Temáticos</h3>
+  {% if groups %}
+    <div class="groups-row">
+      {% for group in groups %}
+        <a href="{{ h.url_for('group.read', id=group.name) }}" class="simple-group-link">
+          {% if group.image_display_url %}
+            <img src="{{ group.image_display_url }}" alt="" class="simple-group-logo">
+          {% endif %}
+          <span class="simple-group-name">{{ group.display_name }}</span>
+          <small class="simple-group-count">{{ group.package_count }} {{ 'pesquisa' if group.package_count == 1 else 'pesquisas' }}</small>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Nenhum grupo temático disponível.</p>
+  {% endif %}
+</div>

@@ -1,16 +1,13 @@
 {% set dataset_type = h.default_package_type() %}
 
-<section class="home-section home-search">
-  <div class="container">
-    <form class="search-form" method="get" action="{% url_for dataset_type ~ '.search' %}">
-      <label class="home-section-title" for="field-main-search">{{ _("Search data") }}</label>
-      <div class="search-input form-group search-giant">
-        <input id="field-main-search" type="text" class="form-control" name="q" value="" autocomplete="off" placeholder="Ex.: matrículas no ensino médio" />
-        <button class="btn" type="submit" aria-labelledby="search-label">
-          <i class="fa fa-search"></i>
-          <span class="sr-only" id="search-label">{{ _('Search') }}</span>
-        </button>
-      </div>
-    </form>
-  </div>
-</section>
+<div class="home-search">
+  <form class="search-form-home" method="get" action="{% url_for dataset_type ~ '.search' %}">
+    <label class="home-explore-title" for="field-main-search">{{ _("Search data") }}</label>
+    <div class="search-input form-group">
+      <input id="field-main-search" type="text" class="form-control" name="q" value="" autocomplete="off" placeholder="Ex.: matrículas no ensino médio" />
+      <button class="btn-search-home" type="submit" aria-label="Buscar">
+        <i class="fa fa-search" aria-hidden="true"></i>
+      </button>
+    </div>
+  </form>
+</div>
