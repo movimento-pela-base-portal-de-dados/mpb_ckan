@@ -1,0 +1,62 @@
+:root {
+  --mpb-transition: 0.4s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --mpb-transition: 0s linear;
+  }
+}
+
+html {
+  height: 100%;
+  font-size: 62.5%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+[role=main],
+.main {
+  position: relative;
+}
+
+.main {
+  flex: 1;
+  padding: 20px 0;
+  background: var(--mpb-white);
+}
+
+a.tag:hover {
+  text-decoration: none;
+  color: var(--mpb-dark);
+  background-color: var(--mpb-white);
+  border: 1px solid var(--mpb-yellow);
+  box-shadow: none;
+}
+
+.toolbar .breadcrumb a {
+  color: var(--mpb-dark);
+}
+
+body {
+  background-color: var(--mpb-white);
+  background: var(--mpb-white);
+}
+
+.container,
+.container-sm,
+.container-md,
+.container-lg,
+.container-xl,
+.container-xxl {
+  width: 100%;
+  max-width: 1200px;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}

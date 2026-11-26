@@ -43,6 +43,7 @@ def test_homepage_uses_configured_identity(app):
     assert "Sobre Portal de Teste MPB" in body or "About Portal de Teste MPB" in body
     assert "Bem Comum" not in body
     assert "/logo.png" not in body
+    assert '<img src="/logo-mpb.png"' in body
 
 
 def test_homepage_uses_portal_defaults(app):
@@ -50,6 +51,9 @@ def test_homepage_uses_portal_defaults(app):
 
     assert "Bem-vindo(a) ao Portal de Dados Movimento pela Base" in body
     assert "ckan-logo.png" not in body
+    assert 'href="/organization/"' not in body
+    assert 'href="/#grupos"' in body
+    assert 'id="grupos"' in body
 
 
 def test_catalog_can_create_search_and_show_dataset(app):
@@ -122,3 +126,11 @@ def test_datastore_resource_can_be_written_and_read(app):
     ).json
     assert result["success"] is True
     assert result["result"]["records"][0]["municipio"] == "Sao Paulo"
+
+
+def test_account_bar_only_for_logged_users(app):
+    assert 'class="account-masthead"' not in app.get("/").get_data(as_text=True)
+
+    body = app.get("/", headers=_admin_headers()).get_data(as_text=True)
+
+    assert 'class="account-masthead"' in body

@@ -1,0 +1,14 @@
+<section id="sobre" class="home-section home-about">
+  <div class="home-about-art" aria-hidden="true">
+    <span class="about-triangle about-l-triangle-green"></span>
+
+    <span class="about-triangle about-r-triangle-yellow"></span>
+    <span class="about-triangle about-r-triangle-yellow-light"></span>
+  </div>
+  <div class="container home-about-inner">
+    <h2 class="home-about-title">{{ _('About') }}</h2>
+    <div class="home-about-text">
+      {{ h.render_markdown(g.site_about) }}
+    </div>
+  </div>
+</section>

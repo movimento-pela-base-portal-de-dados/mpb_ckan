@@ -136,9 +136,9 @@ def test_portal_navigation_points_to_pesquisa(app):
 
     body = app.get("/").get_data(as_text=True)
 
-    assert 'action="/pesquisa/"' in body
-    assert 'href="/pesquisa/?tags=' in body
-    assert app.get("/pesquisa/").status_code == 200
+    assert 'action="/pesquisas/"' in body
+    assert "?tags=" not in body
+    assert app.get("/pesquisas/").status_code == 200
 
 
 @pytest.mark.ckan_config("ckan.plugins", "mpb scheming_datasets")

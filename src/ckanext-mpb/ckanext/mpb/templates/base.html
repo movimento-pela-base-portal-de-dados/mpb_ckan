@@ -8,4 +8,14 @@
 {% block links %}
     {{ super() }}
     <link rel="shortcut icon" href="{{ h.url_for_static('/favicon.ico') }}" />
+    <link rel="preload" as="font" type="font/woff2" href="{{ h.url_for_static('/fonts/source-serif-pro/source-serif-pro-latin-400-normal.woff2') }}" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="{{ h.url_for_static('/fonts/source-serif-pro/source-serif-pro-latin-900-normal.woff2') }}" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="{{ h.url_for_static('/fonts/open-sans/open-sans-latin-400-normal.woff2') }}" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="{{ h.url_for_static('/fonts/open-sans/open-sans-latin-600-normal.woff2') }}" crossorigin />
+    <link rel="preload" as="image" href="{{ h.url_for_static_or_external(g.site_logo or '/logo-mpb.png') }}" />
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {% asset 'mpb/mpb-js' %}
 {% endblock %}

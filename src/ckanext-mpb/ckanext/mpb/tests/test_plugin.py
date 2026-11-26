@@ -48,11 +48,14 @@ To temporary patch the CKAN configuration for the duration of a test you can use
         pass
 """
 
+import re
+from pathlib import Path
+
 import pytest
 from ckan.plugins import plugin_loaded
 
 import ckanext.mpb.plugin as plugin
-from ckanext.mpb import constants
+from ckanext.mpb import constants, theme
 
 
 @pytest.mark.ckan_config("ckan.plugins", "mpb")
@@ -79,6 +82,11 @@ def test_plugin_registers_theme_resources(monkeypatch):
         "add_resource",
         lambda directory, name: calls.append(("resource", directory, name)),
     )
+    monkeypatch.setattr(
+        plugin.theme,
+        "register_core_theme",
+        lambda: calls.append(("theme",)),
+    )
 
     config = {}
     plugin.MpbPlugin().update_config(config)
@@ -87,6 +95,7 @@ def test_plugin_registers_theme_resources(monkeypatch):
         ("templates", config, "templates"),
         ("public", config, "public"),
         ("resource", "assets", "mpb"),
+        ("theme",),
     ]
 
 
@@ -132,3 +141,30 @@ def test_portal_defaults_keep_configured_values():
     plugin.apply_portal_defaults(config)
 
     assert config == configured
+
+
+@pytest.mark.ckan_config("ckan.plugins", "mpb")
+@pytest.mark.usefixtures("with_plugins")
+def test_css_fonts_are_served_locally(app):
+    css = (Path(plugin.__file__).parent / "assets" / "css" / "typography.css").read_text()
+    fonts = re.findall(r'url\("(/fonts/[^"]+\.woff2)"\)', css)
+
+    assert {"Source Serif Pro", "Open Sans"} <= set(re.findall(r'font-family: "([^"]+)"', css))
+    assert fonts
+    for font in fonts:
+        assert app.get(font).status_code == 200
+
+
+def test_core_rem_values_follow_10px_root():
+    css = ".a{font-size:.875rem;padding:0.5rem 1rem;width:calc(1.375rem + 1.5vw)}.x2rem{}"
+
+    assert theme.scale_rem(css) == (
+        ".a{font-size:1.4rem;padding:0.8rem 1.6rem;width:calc(2.2rem + 1.5vw)}.x2rem{}"
+    )
+
+
+def test_core_theme_is_scaled(app):
+    body = app.get("/").get_data(as_text=True)
+    href = re.search(r'href="(/webassets/base/[^"]*main\.css)"', body).group(1)
+
+    assert "--bs-body-font-size: 1.4rem" in app.get(href).get_data(as_text=True)

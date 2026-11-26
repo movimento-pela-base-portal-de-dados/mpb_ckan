@@ -1,0 +1,14 @@
+.site-footer {
+  background-color: var(--mpb-dark);
+  background: var(--mpb-dark);
+}
+
+.site-footer,
+.site-footer label,
+.site-footer small {
+  color: var(--mpb-white-60);
+}
+.site-footer a {
+  transition: color var(--mpb-transition);
+  color: var(--mpb-white-60);
+}
